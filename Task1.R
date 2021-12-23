@@ -21,10 +21,18 @@ data.survey$Income_40k_to_70k <- ifelse(data.survey$Income == 2, 1, 0)
 data.survey$Income_71k_to_100k <- ifelse(data.survey$Income == 3, 1, 0)
 data.survey$Income_101k_to_157k <- ifelse(data.survey$Income == 4, 1, 0)
 data.survey$Income <- NULL
+# NewsP löschen, damit es dann die reference Category ist
+data.survey$NewsP <- NULL
 
 # Categories erstellen
 data.categories$iPhone <- ifelse(data.categories$iPhone == 1, "iPhone", "other smartphone")
+data.categories$Degree <- ifelse(data.categories$Degree == 1, "Undergraduate degree", "Master’s degree or higher")
 data.categories$CompBuy <- ifelse(data.categories$CompBuy == 1, "Yes", "No")
+data.categories$Income <- ifelse(data.categories$Income == 1, "< $40k",
+                          ifelse(data.categories$Income == 2, "$40k - $70k",
+                          ifelse(data.categories$Income == 3, "$71k – $100k",
+                          ifelse(data.categories$Income == 4, "$101k - $175k", "> $175k"))))
+
 data.categories$Occupation <- ifelse(data.categories$Occup_Health == 1, "Health services", 
                               ifelse(data.categories$Occup_Finc == 1, "Financial services",
                               ifelse(data.categories$Occup_Sales == 1, "Sales",
@@ -47,17 +55,37 @@ data.categories$Occup_Retail <- NULL
 data.categories$Occup_SMB <- NULL
 
 data.categories$MediaUse <- ifelse(data.categories$FB_Insta == 1, "Facebook/Instagram",
-                            ifelse(data.categories$Twit == 1, "Snap",
+                            ifelse(data.categories$Twit == 1, "Twitter",
+                            ifelse(data.categories$Snap == 1, "Snapchat",
                             ifelse(data.categories$YouTube == 1, "YouTube/Netflix/Hulu",
                             ifelse(data.categories$Pod_radio == 1, "Radio/podcasts",
-                            ifelse(data.categories$TV == 1, "TV", "Newspapers or magazines")))))
+                            ifelse(data.categories$TV == 1, "TV", "Newspapers or magazines"))))))
 data.categories$FB_Insta <- NULL
 data.categories$Twit <- NULL
+data.categories$Snap <- NULL
 data.categories$YouTube <- NULL
 data.categories$Pod_radio <- NULL
 data.categories$TV <- NULL
 data.categories$NewsP <- NULL
 
+data.categories$AmznP <- ifelse(data.categories$AmznP == 1, "Yes", "No")
+
+data.categories$Gender <- ifelse(data.categories$Female == 1, "Female", "Male")
+data.categories$Female <- NULL
+
+head(data.survey)
+any(is.na(data.survey)) # FALSE --> no missing values
+summary(data.survey)
+names(data.survey)
+data.dummies <- data.survey
+#write.csv(data.dummies, file = "data.dummies.csv", row.names = FALSE)
+
+head(data.categories)
+any(is.na(data.survey)) # FALSE --> no missing values
+summary(data.survey)
+names(data.survey)
+# Data Set mit Kategorien speichern
+#write.csv(data.categories, file = "data.categories.csv", row.names = FALSE)
 
 # Age
 #plot(data.survey$Age) # 20 - 50 Jahre
