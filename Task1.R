@@ -81,16 +81,16 @@ data.dummies <- data.survey
 #write.csv(data.dummies, file = "data.dummies.csv", row.names = FALSE)
 
 head(data.categories)
-any(is.na(data.survey)) # FALSE --> no missing values
-summary(data.survey)
-names(data.survey)
+any(is.na(data.categories)) # FALSE --> no missing values
+summary(data.categories)
+names(data.categories)
 # Data Set mit Kategorien speichern
 #write.csv(data.categories, file = "data.categories.csv", row.names = FALSE)
 
 # Age
 #plot(data.survey$Age) # 20 - 50 Jahre
 #boxplot(data.survey$Age) # keine Outlier
-ggplot(data = data.survey, aes(x = Age)) + #fill: variable for differencing ('target)
+ggplot(data = data.dummies, aes(x = Age)) + #fill: variable for differencing ('target)
   geom_histogram(bins = 45, col = "white", fill ="turquoise4") + # position dodge: next to each other
   labs(x = "Age", y = "Frequency") +
   grid(TRUE)+
@@ -98,14 +98,88 @@ ggplot(data = data.survey, aes(x = Age)) + #fill: variable for differencing ('ta
   theme_classic(base_size = 10)# change size of text
 #ggsave(file="age_ditribution.png", width=8, height=3, dpi=600) 
 # --> keine normale Distribution
+data.dummies$Age <- scale(data.dummies$Age)
 
 # WTP
 #plot(data.survey$WTP) # 100 - 400
-#boxplot(data.survey$WTP) # Outlier ca 340 - 400, aber nicht so wild
-ggplot(data = data.survey, aes(x = WTP)) + #fill: variable for differencing ('target)
+#boxplot(data.survey$WTP) # Outlier ca 350 - 400
+ggplot(data = data.dummies, aes(x = WTP)) + #fill: variable for differencing ('target)
   geom_histogram(bins = 45, col = "white", fill ="turquoise4") + # position dodge: next to each other
   labs(x = "WTP", y = "Frequency") +
   grid(TRUE)+
   scale_x_continuous(breaks = seq(0, 400, by = 20)) +
   theme_classic(base_size = 10)# change size of text
 #ggsave(file="wtp_ditribution.png", width=8, height=3, dpi=600) 
+
+#Outlier eleminieren
+data.dummies <- subset(data.dummies, data.dummies$WTP <350)
+dim(data.dummies) #984 40 --> mehr als am Anfang weil dummies hinzugefügt wurden
+
+data.categories <- subset(data.categories, data.categories$WTP <350)
+dim(data.categories) #984 23 --> weniger wg Kategorien
+
+# Gender
+data.categories[,"Gender"] <- as.factor(data.categories[,"Gender"])
+plot(data.categories$Gender)
+summary(data.categories$Gender) #148 Female, 110 Male
+
+# Occupation
+data.categories[,"Occupation"] <- as.factor(data.categories[,"Occupation"])
+summary(data.categories$Occupation)
+# 103 Advertising/public relations 
+# 73 Construction/transportation/manufacturing/logistics 
+# 85 Education
+# 52 Engineering
+# 126 Financial services 
+# 64 Health services
+# 74 Other/family caretaker  
+# 77 Retailing/services/restaurant  
+# 137 Sales 
+# 93 Small-medium business/self-employed 
+# 100 Technology
+#plot(data.categories$Occupation)
+#prop.table(table(data.categories$Occupation))
+head(data.categories)
+
+# iPhone
+data.categories[,"iPhone"] <- as.factor(data.categories[,"iPhone"])
+plot(data.categories$iPhone)
+summary(data.categories$iPhone) # iPhone bischen höher als other
+
+
+# CompBuy
+data.categories[,"CompBuy"] <- as.factor(data.categories[,"CompBuy"])
+plot(data.categories$CompBuy)
+summary(data.categories$CompBuy)
+prop.table(table(data.categories$CompBuy)) # 80% nein, fast 20% bekommen Technology von Arbeitgeber gestellt
+
+
+
+# AmznP
+data.categories[,"AmznP"] <- as.factor(data.categories[,"AmznP"])
+plot(data.categories$AmznP)
+summary(data.categories$AmznP) # ca 100 Leute mehr haben Amazon Prime Account
+
+
+# Degree
+data.categories[,"Degree"] <- as.factor(data.categories[,"Degree"])
+plot(data.categories$Degree)
+summary(data.categories$Degree)
+# undergraduate degree ca doppelt so viel wie master or higher
+
+# Income
+data.categories[,"Income"] <- as.factor(data.categories[,"Income"])
+plot(data.categories$Income)
+summary(data.categories$Income)
+# most peopke $71k-$100k, only few <40k
+
+# MediaUse
+data.categories[,"MediaUse"] <- as.factor(data.categories[,"MediaUse"])
+plot(data.categories$MediaUse)
+summary(data.categories$MediaUse)
+prop.table(table(data.categories$MediaUse))
+# almost all Facebook/ Instagram
+
+
+
+
