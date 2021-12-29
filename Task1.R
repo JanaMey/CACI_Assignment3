@@ -99,24 +99,29 @@ names(data.categories)
 # Age
 # Average Age
 summary(data.survey$Age) # Mean 35,52 ; Median 36
-#plot(data.survey$Age) # 20 - 50 Jahre
+#plot(data.survey$Age) # ca 20 - 50 Jahre
+max(data.survey$Age) #47
+min(data.survey$Age) #24
 #boxplot(data.survey$Age) # keine Outlier
 ggplot(data = data.survey, aes(x = Age)) + #fill: variable for differencing ('target)
-  geom_histogram(bins = 45, col = "white", fill ="turquoise4") + # position dodge: next to each other
+  geom_histogram(bins = 45, col = "white", fill ="grey24") + # position dodge: next to each other
   labs(x = "Age", y = "Frequency") +
   grid(TRUE)+
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
-  theme_classic(base_size = 10)# change size of text
-#ggsave(file="age_ditribution.png", width=8, height=3, dpi=600) 
+  scale_y_continuous(breaks = seq(0, 120, by = 10)) +
+  theme_classic(base_size = 15) # change size of text 
+  ggsave(file="ageDitribution.png", width=8, height=3, dpi=600) 
 # --> keine normale Distribution
-data.survey$Age <- scale(data.survey$Age)
-data.categories$Age <- scale(data.categories$Age)
-data.dummies$Age <- scale(data.dummies$Age)
+#data.survey$Age <- scale(data.survey$Age)
+#data.categories$Age <- scale(data.categories$Age)
+#data.dummies$Age <- scale(data.dummies$Age)
 
-# WTP
+# WTP --> Willingness to pay
 # Average WTP
 summary(data.survey$WTP) # Mean 212,9 ; Median 210
-#plot(data.survey$WTP) # 100 - 400
+#plot(data.survey$WTP) # ca 100 - 400
+max(data.survey$WTP) #390
+min(data.survey$WTP) #100
 #boxplot(data.survey$WTP) # Outlier ca 350 - 400
 ggplot(data = data.survey, aes(x = WTP)) + #fill: variable for differencing ('target)
   geom_histogram(bins = 45, col = "white", fill ="turquoise4") + # position dodge: next to each other
@@ -138,13 +143,14 @@ summary(data.categories$WTP) # Mean 210,4 ; Median 210
 # Gender
 data.categories[,"Gender"] <- as.factor(data.categories[,"Gender"])
 #plot(data.categories$Gender)
-summary(data.categories$Gender) #148 Female, 110 Male
+summary(data.categories$Gender) #566 Female, 434 Male
 ggplot(data = data.categories, aes(x = Gender)) +
   geom_histogram(bins = 43, binwidth = 10, col = "white", fill ="turquoise4", stat="count")+
   labs(x = "Gender", y = "Frequency") +
   grid(TRUE)+
   #scale_x_continuous(breaks = seq(0, 600, by = 50)) +
   theme_classic(base_size = 10)# change size of text
+prop.table(table(data.categories$Gender))
 
 # Occupation
 data.categories[,"Occupation"] <- as.factor(data.categories[,"Occupation"])
@@ -161,7 +167,7 @@ summary(data.categories$Occupation)
 # 93 Small-medium business/self-employed 
 # 100 Technology
 #plot(data.categories$Occupation)
-#prop.table(table(data.categories$Occupation))
+prop.table(table(data.categories$Occupation))
 head(data.categories)
 
 # iPhone
@@ -192,6 +198,8 @@ data.categories[,"Income"] <- as.factor(data.categories[,"Income"])
 #plot(data.categories$Income)
 summary(data.categories$Income)
 # most peopke $71k-$100k, only few <40k
+prop.table(table(data.categories$Income))
+
 
 # MediaUse
 data.categories[,"MediaUse"] <- as.factor(data.categories[,"MediaUse"])
