@@ -62,9 +62,9 @@ table(cutree(cl.single, 30))
 
 # complete linkage
 plot(as.dendrogram(cl.complete))
-rect.hclust(cl.complete, k = 6, border = "darkred") 
+rect.hclust(cl.complete, k = 3, border = "darkred") 
 # size of clusters?
-table(cutree(cl.complete, 6))
+table(cutree(cl.complete,4))
 #   1   2   3   4   5   6
 # 176  147 234 269 69 105
 #looks reasonable and decent
@@ -200,10 +200,6 @@ clust.kmean <- aggregate(data.survey[, -c(39,40)],
                          by = list(cluster = data.survey$cluster_kmeans), 
                          function(x)c(mean = round(mean(x), 2)))
 clust.kmean
-# See differences!!
-#...
-
-
 # visualize differences for satisfaction ratings
 clust.kmean_long <- melt(clust.kmean[, -c(2,15:49)], id.vars = "cluster") 
 
@@ -215,9 +211,17 @@ ggplot(data = clust.kmean_long, aes(x = variable, y = value,
   theme_classic()
 
 
+#Look at differences in clusters with Complete Linkage
+t(aggregate(data.survey[, -c(1,39,40)], 
+            by = list(cluster = data.survey$cluster), 
+            function(x)c(mean = round(mean(x), 2))))
 
-# plot
-# complete linkagemethod
+#Look at differences in clusters with Complete Linkage
+t(aggregate(data.survey[, -c(1,39,40)], 
+            by = list(cluster = data.survey$cluster_kmeans), 
+            function(x)c(mean = round(mean(x), 2))))
+
+# how well clusters are separate with complete linkage and k-means
 clusplot(data.survey.sc, cutree(cl.complete, 6), color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "Complete Linkage plot")
 #Cluster 3 and 2 are the most distinct. 2 has a little overlap
@@ -226,3 +230,8 @@ clusplot(data.survey.sc, cutree(cl.complete, 6), color = TRUE , shade = TRUE ,
 clusplot(data.survey.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "K-means cluster plot")
 #slighlty less oberlap, but quiet similar
+
+table(data.survey$cluster)
+table(data.survey$cluster_kmeans)
+
+#What is better? Different results?
