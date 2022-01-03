@@ -60,16 +60,6 @@ plot(as.dendrogram(cl.single), ylim = c(0, 3),
 table(cutree(cl.single, 30)) 
 #not good
 
-# complete linkage
-plot(as.dendrogram(cl.complete))
-rect.hclust(cl.complete, k = 3, border = "darkred") 
-# size of clusters?
-table(cutree(cl.complete,4))
-#   1   2   3   4   5   6
-# 176  147 234 269 69 105
-#looks reasonable and decent
-
-
 # average linkage
 plot(as.dendrogram(cl.average))
 rect.hclust(cl.average, k = 6, border = "darkred") 
@@ -91,19 +81,32 @@ rect.hclust(cl.median, k = 3, border = "darkred")
 table(cutree(cl.median, 6))
 #not good
 
+# complete linkage
+plot(as.dendrogram(cl.complete))
+rect.hclust(cl.complete, k = 3, border = "darkred") 
+# size of clusters?
+table(cutree(cl.complete,6))
+#   1   2   3   4   5   6
+# 176  147 234 269 69 105
+table(cutree(cl.complete,3))
+# 176 216 608
+
 # ward's method
 # minimizing the variance within clusters, aim for tighter clusters
 # spherical or round clusters
 plot(as.dendrogram(cl.ward))
-rect.hclust(cl.ward, k = 6, border = "darkred")
+rect.hclust(cl.ward, k = 3, border = "darkred")
 #looks reasonable
 # size of clusters?
+table(cutree(cl.ward, 3))
+#383 190 427
 table(cutree(cl.ward, 6))
-#looks good too!!
+#278 190 227 135 105 65
 
 
 #WARD's METHOD and COMPLETE LINKAGE both works!
-#lets go with Complete Linkage
+#Wards best
+#lets go with Wards Method and 3 Clusters?
 
 
 # Variance ratio criterion or Calinski-Harabasz (CH) index ---------------------
@@ -144,7 +147,7 @@ ggplot(VRC, aes(x = K, y = value)) +
 # Describe the clusters on observable characteristic ---------------------------
 # We proceed with complete linkage and 6-cluster solution
 # combine cluster solutions with initial data frame
-data.survey$cluster <- cutree(cl.complete, 6)
+data.survey$cluster <- cutree(cl.ward, 3)
 head(data.survey)
 dim(data.survey)
 
@@ -185,7 +188,7 @@ ggplot(data = clust.mean_long, aes(x = variable, y = value,
 
 # As the k-means initial partition is random, fix the seed for reproducability
 set.seed(185) #random number 
-cl.kmeans <- kmeans(data.survey.sc, centers = 6) #we conitnue with 3 clusters like before
+cl.kmeans <- kmeans(data.survey.sc, centers = 3) #we conitnue with 3 clusters like before
 
 str(cl.kmeans)
 
@@ -212,26 +215,26 @@ ggplot(data = clust.kmean_long, aes(x = variable, y = value,
   theme_classic()
 
 
-#Look at differences in clusters with Complete Linkage
-t(aggregate(data.survey[, -c(1,39,40)], 
+#Look at differences in clusters with Ward
+t(aggregate(data.survey[, -c(1,14:40)], 
             by = list(cluster = data.survey$cluster), 
             function(x)c(mean = round(mean(x), 2))))
 
 #Look at differences in clusters with Complete Linkage
-t(aggregate(data.survey[, -c(1,39,40)], 
+t(aggregate(data.survey[, -c(1,14:40)], 
             by = list(cluster = data.survey$cluster_kmeans), 
             function(x)c(mean = round(mean(x), 2))))
 
-# how well clusters are separate with complete linkage and k-means
-clusplot(data.survey.sc, cutree(cl.complete, 6), color = TRUE , shade = TRUE ,
-         labels = 6, lines = 0, main = "Complete Linkage plot")
+# how well clusters are separate with ward and k-means
+clusplot(data.survey.sc, cutree(cl.ward, 3), color = TRUE , shade = TRUE ,
+         labels = 6, lines = 0, main = "Ward's method plot")
 
 # k-means
 clusplot(data.survey.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "K-means cluster plot")
 
 
-table(data.survey$cluster)
-table(data.survey$cluster_kmeans)
+table(data.survey$cluster) #bei 3: 176 #216 #608
+table(data.survey$cluster_kmeans) #bei 3: 386 384 230 BESSER
 
 #What is better? Different results?
