@@ -103,6 +103,7 @@ table(cutree(cl.ward, 6))
 
 
 #WARD's METHOD and COMPLETE LINKAGE both works!
+#lets go with Complete Linkage
 
 
 # Variance ratio criterion or Calinski-Harabasz (CH) index ---------------------
@@ -169,11 +170,11 @@ ggplot(data = clust.mean_long, aes(x = variable, y = value,
 
 
 # WTP distibution across clusters
-ggplot(data = data.survey, aes(x = log(WTP))) +
-  geom_histogram() +
-  facet_grid(cluster~.) +
-  labs(x = "log(Distance traveled)", y = "Absolute Freqeuncy") +
-  theme_bw()
+#ggplot(data = data.survey, aes(x = log(WTP))) +
+#  geom_histogram() +
+#  facet_grid(cluster~.) +
+#  labs(x = "log(Distance traveled)", y = "Absolute Freqeuncy") +
+#  theme_bw()
 
 
 # Non-hierarchical: K-mean Clustering ==========================================
@@ -224,12 +225,11 @@ t(aggregate(data.survey[, -c(1,39,40)],
 # how well clusters are separate with complete linkage and k-means
 clusplot(data.survey.sc, cutree(cl.complete, 6), color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "Complete Linkage plot")
-#Cluster 3 and 2 are the most distinct. 2 has a little overlap
 
 # k-means
 clusplot(data.survey.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "K-means cluster plot")
-#slighlty less oberlap, but quiet similar
+
 
 table(data.survey$cluster)
 table(data.survey$cluster_kmeans)
