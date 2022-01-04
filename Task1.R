@@ -234,7 +234,7 @@ ggplot(data = data.categories, aes(x = Age, fill = Degree)) +
   theme_classic()
   #ggsave(file="ageFrequencyByDegree.png", width=8, height=3, dpi=600) 
 
-# Age # CompBuy
+# Age + CompBuy
 ggplot(data = data.categories, aes(x = Age, fill = CompBuy)) +
   geom_histogram(bins = 20, col = "white", position = "dodge") +
   labs(x = "Age", y = "Frequency", fill = "Company provides Technology") +
@@ -254,5 +254,74 @@ ggplot(data = data.categories, aes(x = Age, fill = CompBuy)) +
   #scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   #scale_fill_manual(values = c("steelblue4", "skyblue")) +
   #theme_classic()
-  #ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600) 
+  #ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600)
+
+# Age + Gender
+ggplot(data = data.categories, aes(x = Age, fill = Gender)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "Age", y = "Frequency", fill = "Gender") +
+  scale_y_continuous(limits = c(0, 80), 
+                     breaks = seq(0, 80, by = 10)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  theme_classic()
+  #ggsave(file="ageFrequencyByGender.png", width=8, height=3, dpi=600) 
+
+# Age + iPhone
+ggplot(data = data.categories, aes(x = Age, fill = iPhone)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "Age", y = "Frequency", fill = "iPhone") +
+  scale_y_continuous(limits = c(0, 60), 
+                     breaks = seq(0, 60, by = 10)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  theme_classic()
+#ggsave(file="ageFrequencyByiPhone.png", width=8, height=3, dpi=600) 
+
+# Age + AmznP
+ggplot(data = data.categories, aes(x = Age, fill = AmznP)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "Age", y = "Frequency", fill = "AmznP") +
+  scale_y_continuous(limits = c(0, 55), 
+                     breaks = seq(0, 55, by = 5)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  theme_classic()
+#ggsave(file="ageFrequencyByAmznP.png", width=8, height=3, dpi=600) 
+
+# Age + Income
+ggplot(data = data.categories, aes(x = Age, fill = Income)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "Age", y = "Frequency", fill = "Income") +
+  scale_y_continuous(limits = c(0, 45), 
+                     breaks = seq(0, 45, by = 5)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
+  #scale_fill_manual(values = c("steelblue4", "skyblue")) + # Farbe überarbeiten, falls Plot verwendet wird.
+  theme_classic()
+#ggsave(file="ageFrequencyByIncome.png", width=8, height=3, dpi=600) 
+
+# WTP + iPhone
+ggplot(data = data.categories, aes(x = WTP, fill = iPhone)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "WTP", y = "Frequency", fill = "iPhone") +
+  scale_y_continuous(limits = c(0, 50), 
+                     breaks = seq(0, 50, by = 5)) +
+  scale_x_continuous(breaks = seq(0, 400, by = 20)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  theme_classic()
+#ggsave(file="WTFFrequencyByiPhone.png", width=8, height=3, dpi=600) 
+
+# WTP + iPhone
+ggplot(data = data.categories, aes(x = WTP, fill = CompBuy)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "WTP", y = "Frequency", fill = "Company provides Technology") +
+  scale_y_continuous(limits = c(0, 120), 
+                     breaks = seq(0, 120, by = 10)) +
+  scale_x_continuous(breaks = seq(0, 400, by = 20)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  theme_classic()
+#ggsave(file="WTFFrequencyByCompBuy.png", width=8, height=3, dpi=600) 
+
+names(data.categories)
+
   
