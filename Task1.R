@@ -112,7 +112,7 @@ summary(data.survey$WTP) # Mean 212,9 ; Median 210
 #plot(data.survey$WTP) # ca 100 - 400
 max(data.survey$WTP) #390
 min(data.survey$WTP) #100
-#boxplot(data.survey$WTP) # Outlier ca 350 - 400, aber nicht so schlimm
+boxplot(data.survey$WTP) # Outlier ca 350 - 400, aber nicht so schlimm
 ggplot(data = data.survey, aes(x = WTP)) + #fill: variable for differencing ('target)
   geom_histogram(bins = 45, col = "white", fill ="grey24") + # position dodge: next to each other
   labs(x = "WTP", y = "Frequency") +
@@ -123,7 +123,7 @@ ggplot(data = data.survey, aes(x = WTP)) + #fill: variable for differencing ('ta
 
 # Gender
 data.categories[,"Gender"] <- as.factor(data.categories[,"Gender"])
-#plot(data.categories$Gender)
+plot(data.categories$Gender)
 summary(data.categories$Gender) #566 Female, 434 Male
 ggplot(data = data.categories, aes(x = Gender)) +
   geom_histogram(bins = 43, binwidth = 10, col = "white", fill ="grey24", stat="count")+
@@ -131,61 +131,127 @@ ggplot(data = data.categories, aes(x = Gender)) +
   grid(TRUE)+
   #scale_x_continuous(breaks = seq(0, 600, by = 50)) +
   theme_classic(base_size = 10)# change size of text
-prop.table(table(data.categories$Gender))
+prop.table(table(data.categories$Gender)) # Female 0.566 - Male 0.434
 
 # Occupation
 data.categories[,"Occupation"] <- as.factor(data.categories[,"Occupation"])
 summary(data.categories$Occupation)
-# 103 Advertising/public relations 
-# 73 Construction/transportation/manufacturing/logistics 
-# 85 Education
-# 52 Engineering
-# 126 Financial services 
-# 64 Health services
-# 74 Other/family caretaker  
-# 77 Retailing/services/restaurant  
-# 137 Sales 
-# 93 Small-medium business/self-employed 
-# 100 Technology
+# 103 Advertising/public relations 0.104
+# 73 Construction/transportation/manufacturing/logistics 0.074
+# 85 Education 0.085
+# 52 Engineering 0.052
+# 126 Financial services 0.128
+# 64 Health services 0.065
+# 74 Other/family caretaker 0.075
+# 77 Retailing/services/restaurant 0.078
+# 137 Sales 0.140
+# 93 Small-medium business/self-employed 0.098
+# 100 Technology 0.101
 #plot(data.categories$Occupation)
 prop.table(table(data.categories$Occupation))
 head(data.categories)
 
 # iPhone
 data.categories[,"iPhone"] <- as.factor(data.categories[,"iPhone"])
-#plot(data.categories$iPhone)
+plot(data.categories$iPhone)
 summary(data.categories$iPhone) # iPhone bischen höher als other
-
+# iPhone 534  0.534 - other 466  0.466
+prop.table(table(data.categories$iPhone))
 
 # CompBuy
 data.categories[,"CompBuy"] <- as.factor(data.categories[,"CompBuy"])
-#plot(data.categories$CompBuy)
-summary(data.categories$CompBuy)
+plot(data.categories$CompBuy)
+summary(data.categories$CompBuy) # No 799 - Yes 201
 prop.table(table(data.categories$CompBuy)) # 80% nein, fast 20% bekommen Technology von Arbeitgeber gestellt
 
 # AmznP
 data.categories[,"AmznP"] <- as.factor(data.categories[,"AmznP"])
-#plot(data.categories$AmznP)
+plot(data.categories$AmznP)
 summary(data.categories$AmznP) # ca 100 Leute mehr haben Amazon Prime Account
+# No 436 - Yes 564
 
 # Degree
 data.categories[,"Degree"] <- as.factor(data.categories[,"Degree"])
-#plot(data.categories$Degree)
-summary(data.categories$Degree)
+plot(data.categories$Degree)
+summary(data.categories$Degree) #Undergraduate 668 - master 332
 # undergraduate degree ca doppelt so viel wie master or higher
 
 # Income
 data.categories[,"Income"] <- as.factor(data.categories[,"Income"])
-#plot(data.categories$Income)
+plot(data.categories$Income)
 summary(data.categories$Income)
 # most peopke $71k-$100k, only few <40k
 prop.table(table(data.categories$Income))
 
+# MediaUse - aufgeteilt in einzelne Medien
+# FB_Insta
+data.categories[,"FB_Insta"] <- as.factor(data.categories[,"FB_Insta"])
+plot(data.categories$FB_Insta)
+summary(data.categories$FB_Insta) # No 257 - Yes 743
 
-# MediaUse
-data.categories[,"MediaUse"] <- as.factor(data.categories[,"MediaUse"])
-#plot(data.categories$MediaUse)
-summary(data.categories$MediaUse)
-prop.table(table(data.categories$MediaUse))
-# almost all Facebook/ Instagram
+# Twit
+data.categories[,"Twit"] <- as.factor(data.categories[,"Twit"])
+plot(data.categories$Twit)
+summary(data.categories$Twit) # No 509 - Yes 491
 
+# Snap
+data.categories[,"Snap"] <- as.factor(data.categories[,"Snap"])
+plot(data.categories$Snap)
+summary(data.categories$Snap) # No 635 - Yes 365
+
+# YouTube
+data.categories[,"YouTube"] <- as.factor(data.categories[,"YouTube"])
+plot(data.categories$YouTube)
+summary(data.categories$YouTube) # No 433 - Yes 567
+
+# Pod_radio
+data.categories[,"Pod_radio"] <- as.factor(data.categories[,"Pod_radio"])
+plot(data.categories$Pod_radio)
+summary(data.categories$Pod_radio) # No 414 - Yes 586
+
+# TV
+data.categories[,"TV"] <- as.factor(data.categories[,"TV"])
+plot(data.categories$TV)
+summary(data.categories$TV) # No 207 - Yes 793
+
+# NewsP
+data.categories[,"NewsP"] <- as.factor(data.categories[,"NewsP"])
+plot(data.categories$NewsP)
+summary(data.categories$NewsP) # No 376 - Yes 624
+
+
+names(data.categories)
+
+# Grouped Histogram
+# Age + Degree
+ggplot(data = data.categories, aes(x = Age, fill = Degree)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "Age", y = "Frequency", fill = "Degree") +
+  scale_y_continuous(limits = c(0, 80), 
+                     breaks = seq(0, 80, by = 10)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  theme_classic()
+  ggsave(file="ageFrequencyByDegree.png", width=8, height=3, dpi=600) 
+
+# Age # CompBuy
+ggplot(data = data.categories, aes(x = Age, fill = CompBuy)) +
+  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  labs(x = "Age", y = "Frequency", fill = "Company provides Technology") +
+  scale_y_continuous(limits = c(0, 75), 
+                     breaks = seq(0, 75, by = 10)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  theme_classic()
+  ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600) 
+
+# Age + Occupation Bars werden nicht angezeigt.
+#ggplot(data = data.categories, aes(x = Age, fill = Occupation)) +
+ # geom_histogram(bins = 20, col = "white", position = "dodge") +
+  #labs(x = "Age", y = "Frequency", fill = "Occupation") +
+  #scale_y_continuous(limits = c(0, 10), 
+  #                   breaks = seq(0, 10, by = 10)) +
+  #scale_x_continuous(breaks = seq(0, 50, by = 1)) +
+  #scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  #theme_classic()
+  #ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600) 
