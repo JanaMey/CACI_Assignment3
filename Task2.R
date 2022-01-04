@@ -1,5 +1,6 @@
 # Install and load the required libraries ----------------------------------------
-pacman::p_load(reshape2, ggplot2, dplyr, stringr, corrplot)
+pacman::p_load(reshape2, ggplot2, psych, corrplot, fpc, cluster,
+               nnet, mclust, e1071, randomForest)
 
 # data.survey ist der original Datensatz
 # data.categories ist der Datensatz nur mit Kategorien und keine Dummies
@@ -15,11 +16,11 @@ data.categories <-read.csv(urlfile)
 urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.dummies.csv'
 data.dummies <-read.csv(urlfile)
 
-head(data.survey)
+head(data.dummies)
 
 # Plot the distribution of importance ratings
 # using pairs.panels function in psych package
-pairs.panels(data.survey[, 2:12],
+pairs.panels(data.dummies[, 2:14],
              method = "pearson",  # correlation method
              hist.col = "grey60", # color of hist. bins
              density = TRUE,      # show density plots
@@ -29,13 +30,13 @@ pairs.panels(data.survey[, 2:12],
 # Hierarchical Clustering
 # What proximity measure is appropriate? ---------------------------------------
 # Standardize the data -> because means and scale differs
-data.survey.sc = data.survey[, 2:12] #only the evals
-data.survey.sc = scale(data.survey.sc) #center 0 and s.d. is 1
-head(data.survey.sc)
-summary(data.survey.sc)
+data.dummies.sc = data.dummies[, 2:14] #only the evals
+data.dummies.sc = scale(data.dummies.sc) #center 0 and s.d. is 1
+head(data.dummies.sc)
+summary(data.dummies.sc)
 
 # Compute Euclidean distance
-dist.eucl <- dist(data.survey.sc) #method by default is euclidean, you can specify manhattan etc.
+dist.eucl <- dist(data.dummies.sc) #method by default is euclidean, you can specify manhattan etc.
 as.matrix(dist.eucl)[1:6, 1:6] 
 
 
@@ -83,30 +84,32 @@ table(cutree(cl.median, 6))
 
 # complete linkage
 plot(as.dendrogram(cl.complete))
-rect.hclust(cl.complete, k = 3, border = "darkred") 
+rect.hclust(cl.complete, k = 4, border = "darkred") 
 # size of clusters?
 table(cutree(cl.complete,6))
 #   1   2   3   4   5   6
-# 176  147 234 269 69 105
+# 197 62 206 128 185 122
 table(cutree(cl.complete,3))
-# 176 216 608
+# 382 184 434
+# 197 184 434 185
 
 # ward's method
 # minimizing the variance within clusters, aim for tighter clusters
 # spherical or round clusters
-plot(as.dendrogram(cl.ward))
+plot(as.dendrogram(cl.ward), leaflab = "none", ylim = c(0, 70))
 rect.hclust(cl.ward, k = 3, border = "darkred")
 #looks reasonable
 # size of clusters?
-table(cutree(cl.ward, 3))
-#383 190 427
-table(cutree(cl.ward, 6))
-#278 190 227 135 105 65
+table(cutree(cl.ward, 4))
+#398 189 413
+#398 189 284 129 -> BEST
+table(cutree(cl.ward, 5))
+# 398 189 196 88 129
 
 
 #WARD's METHOD and COMPLETE LINKAGE both works!
 #Wards best
-#lets go with Wards Method and 3 Clusters?
+#lets go with Wards Method and 4 Clusters?
 
 
 # Variance ratio criterion or Calinski-Harabasz (CH) index ---------------------
@@ -147,20 +150,21 @@ ggplot(VRC, aes(x = K, y = value)) +
 # Describe the clusters on observable characteristic ---------------------------
 # We proceed with complete linkage and 6-cluster solution
 # combine cluster solutions with initial data frame
-data.survey$cluster <- cutree(cl.ward, 3)
-head(data.survey)
-dim(data.survey)
+data.dummies$cluster <- cutree(cl.ward, 4)
+head(data.dummies)
+dim(data.dummies)
 
 
 #compute the mean
-clust.mean <- aggregate(data.survey[, -c(1,39)], 
-                        by = list(cluster = data.survey$cluster), 
+clust.mean <- aggregate(data.dummies[, -c(1,42)], 
+                        by = list(cluster = data.dummies$cluster), 
                         function(x)c(mean = round(mean(x), 2)))
 clust.mean
+dim(clust.mean)
 
 
 # visualize differences for ratings
-clust.mean_long <- melt(clust.mean[, -c(14:38)], id.vars = "cluster") 
+clust.mean_long <- melt(clust.mean[, -c(14:42)], id.vars = "cluster") 
 head(clust.mean_long)
 
 ggplot(data = clust.mean_long, aes(x = variable, y = value, 
@@ -188,7 +192,7 @@ ggplot(data = clust.mean_long, aes(x = variable, y = value,
 
 # As the k-means initial partition is random, fix the seed for reproducability
 set.seed(185) #random number 
-cl.kmeans <- kmeans(data.survey.sc, centers = 3) #we conitnue with 3 clusters like before
+cl.kmeans <- kmeans(data.dummies.sc, centers = 4) #we conitnue with 3 clusters like before
 
 str(cl.kmeans)
 
@@ -196,16 +200,17 @@ str(cl.kmeans)
 cl.kmeans$cluster
 
 # combine with the original data
-data.survey$cluster_kmeans <- cl.kmeans$cluster
-head(data.survey)
-dim(data.survey)
+data.dummies$cluster_kmeans <- cl.kmeans$cluster
+head(data.dummies)
+dim(data.dummies)
 
-clust.kmean <- aggregate(data.survey[, -c(39,40)], 
-                         by = list(cluster = data.survey$cluster_kmeans), 
+clust.kmean <- aggregate(data.dummies[, -c(42,43)], 
+                         by = list(cluster = data.dummies$cluster_kmeans), 
                          function(x)c(mean = round(mean(x), 2)))
 clust.kmean
+dim(clust.mean)
 # visualize differences for satisfaction ratings
-clust.kmean_long <- melt(clust.kmean[, -c(2,15:49)], id.vars = "cluster") 
+clust.kmean_long <- melt(clust.kmean[, -c(2,15:41)], id.vars = "cluster") 
 
 ggplot(data = clust.kmean_long, aes(x = variable, y = value, 
                                     fill = as.factor(cluster))) +
@@ -216,25 +221,27 @@ ggplot(data = clust.kmean_long, aes(x = variable, y = value,
 
 
 #Look at differences in clusters with Ward
-t(aggregate(data.survey[, -c(1,14:40)], 
-            by = list(cluster = data.survey$cluster), 
+head(data.dummies)
+dim(data.dummies)
+t(aggregate(data.dummies[, -c(1, 15:43)], 
+            by = list(cluster = data.dummies$cluster), 
             function(x)c(mean = round(mean(x), 2))))
 
-#Look at differences in clusters with Complete Linkage
-t(aggregate(data.survey[, -c(1,14:40)], 
-            by = list(cluster = data.survey$cluster_kmeans), 
+#Look at differences in clusters with K-Means
+t(aggregate(data.dummies[, -c(1, 15:43)], 
+            by = list(cluster = data.dummies$cluster_kmeans), 
             function(x)c(mean = round(mean(x), 2))))
 
 # how well clusters are separate with ward and k-means
-clusplot(data.survey.sc, cutree(cl.ward, 3), color = TRUE , shade = TRUE ,
+clusplot(data.dummies.sc, cutree(cl.ward, 4), color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "Ward's method plot")
 
 # k-means
-clusplot(data.survey.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
+clusplot(data.dummies.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "K-means cluster plot")
 
 
-table(data.survey$cluster) #bei 3: 176 #216 #608
-table(data.survey$cluster_kmeans) #bei 3: 386 384 230 BESSER
+table(data.dummies$cluster) #bei 3: 176 #216 #608
+table(data.dummies$cluster_kmeans) #bei 3: 386 384 230 BESSER
 
 #What is better? Different results?
