@@ -80,14 +80,14 @@ any(is.na(data.dummies)) # FALSE --> no missing values
 summary(data.dummies)
 names(data.dummies)
 # Data Set mit Dummies speichern
-#write.csv(data.dummies, file = "data.dummies.csv", row.names = FALSE)
+write.csv(data.dummies, file = "data.dummies.csv", row.names = FALSE)
 
 head(data.categories)
 any(is.na(data.categories)) # FALSE --> no missing values
 summary(data.categories)
 names(data.categories)
 # Data Set mit Kategorien speichern
-#write.csv(data.categories, file = "data.categories.csv", row.names = FALSE)
+write.csv(data.categories, file = "data.categories.csv", row.names = FALSE)
 
 # Age
 # Average Age
@@ -119,7 +119,7 @@ ggplot(data = data.survey, aes(x = WTP)) + #fill: variable for differencing ('ta
   grid(TRUE)+
   scale_x_continuous(breaks = seq(0, 400, by = 20)) +
   theme_classic(base_size = 10)# change size of text
-#ggsave(file="wtp_ditribution.png", width=8, height=3, dpi=600) 
+ggsave(file="wtp_ditribution.png", width=8, height=3, dpi=600) 
 
 # Gender
 data.categories[,"Gender"] <- as.factor(data.categories[,"Gender"])
@@ -188,3 +188,4 @@ data.categories[,"MediaUse"] <- as.factor(data.categories[,"MediaUse"])
 summary(data.categories$MediaUse)
 prop.table(table(data.categories$MediaUse))
 # almost all Facebook/ Instagram
+
