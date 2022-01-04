@@ -26,8 +26,6 @@ data.dummies$Income_40k_to_70k <- ifelse(data.survey$Income == 2, 1, 0)
 data.dummies$Income_71k_to_100k <- ifelse(data.survey$Income == 3, 1, 0)
 data.dummies$Income_101k_to_157k <- ifelse(data.survey$Income == 4, 1, 0)
 data.dummies$Income <- NULL
-# NewsP löschen, damit es dann die reference Category ist
-data.dummies$NewsP <- NULL
 
 # Categories erstellen
 data.categories$iPhone <- ifelse(data.survey$iPhone == 1, "iPhone", "other smartphone")
@@ -59,19 +57,13 @@ data.categories$Occup_Tech <- NULL
 data.categories$Occup_Retail <- NULL
 data.categories$Occup_SMB <- NULL
 
-data.categories$MediaUse <- ifelse(data.survey$FB_Insta == 1, "Facebook/Instagram",
-                            ifelse(data.survey$Twit == 1, "Twitter",
-                            ifelse(data.survey$Snap == 1, "Snapchat",
-                            ifelse(data.survey$YouTube == 1, "YouTube/Netflix/Hulu",
-                            ifelse(data.survey$Pod_radio == 1, "Radio/podcasts",
-                            ifelse(data.survey$TV == 1, "TV", "Newspapers or magazines"))))))
-data.categories$FB_Insta <- NULL
-data.categories$Twit <- NULL
-data.categories$Snap <- NULL
-data.categories$YouTube <- NULL
-data.categories$Pod_radio <- NULL
-data.categories$TV <- NULL
-data.categories$NewsP <- NULL
+data.categories$FB_Insta <- ifelse(data.survey$FB_Insta == 1, "Yes", "No")
+data.categories$Twit <- ifelse(data.survey$Twit == 1, "Yes", "No")
+data.categories$Snap <- ifelse(data.survey$Snap == 1, "Yes", "No")
+data.categories$YouTube <- ifelse(data.survey$YouTube == 1, "Yes", "No")
+data.categories$Pod_radio <- ifelse(data.survey$Pod_radio == 1, "Yes", "No")
+data.categories$TV <- ifelse(data.survey$TV == 1, "Yes", "No")
+data.categories$NewsP <- ifelse(data.survey$NewsP == 1, "Yes", "No")
 
 data.categories$AmznP <- ifelse(data.survey$AmznP == 1, "Yes", "No")
 
@@ -87,6 +79,7 @@ head(data.dummies)
 any(is.na(data.dummies)) # FALSE --> no missing values
 summary(data.dummies)
 names(data.dummies)
+# Data Set mit Dummies speichern
 #write.csv(data.dummies, file = "data.dummies.csv", row.names = FALSE)
 
 head(data.categories)
@@ -112,9 +105,6 @@ ggplot(data = data.survey, aes(x = Age)) + #fill: variable for differencing ('ta
   theme_classic(base_size = 15) # change size of text 
   ggsave(file="ageDitribution.png", width=8, height=3, dpi=600) 
 # --> keine normale Distribution
-#data.survey$Age <- scale(data.survey$Age)
-#data.categories$Age <- scale(data.categories$Age)
-#data.dummies$Age <- scale(data.dummies$Age)
 
 # WTP --> Willingness to pay
 # Average WTP
@@ -122,30 +112,21 @@ summary(data.survey$WTP) # Mean 212,9 ; Median 210
 #plot(data.survey$WTP) # ca 100 - 400
 max(data.survey$WTP) #390
 min(data.survey$WTP) #100
-#boxplot(data.survey$WTP) # Outlier ca 350 - 400
+#boxplot(data.survey$WTP) # Outlier ca 350 - 400, aber nicht so schlimm
 ggplot(data = data.survey, aes(x = WTP)) + #fill: variable for differencing ('target)
-  geom_histogram(bins = 45, col = "white", fill ="turquoise4") + # position dodge: next to each other
+  geom_histogram(bins = 45, col = "white", fill ="grey24") + # position dodge: next to each other
   labs(x = "WTP", y = "Frequency") +
   grid(TRUE)+
   scale_x_continuous(breaks = seq(0, 400, by = 20)) +
   theme_classic(base_size = 10)# change size of text
 #ggsave(file="wtp_ditribution.png", width=8, height=3, dpi=600) 
 
-#Outlier eleminieren
-data.survey <- subset(data.survey, data.survey$WTP <350)
-data.dummies <- subset(data.dummies, data.dummies$WTP <350)
-dim(data.dummies) #984 40 --> mehr als am Anfang weil dummies hinzugefügt wurden
-
-data.categories <- subset(data.categories, data.categories$WTP <350)
-dim(data.categories) #984 23 --> weniger wg Kategorien
-summary(data.categories$WTP) # Mean 210,4 ; Median 210
-
 # Gender
 data.categories[,"Gender"] <- as.factor(data.categories[,"Gender"])
 #plot(data.categories$Gender)
 summary(data.categories$Gender) #566 Female, 434 Male
 ggplot(data = data.categories, aes(x = Gender)) +
-  geom_histogram(bins = 43, binwidth = 10, col = "white", fill ="turquoise4", stat="count")+
+  geom_histogram(bins = 43, binwidth = 10, col = "white", fill ="grey24", stat="count")+
   labs(x = "Gender", y = "Frequency") +
   grid(TRUE)+
   #scale_x_continuous(breaks = seq(0, 600, by = 50)) +
