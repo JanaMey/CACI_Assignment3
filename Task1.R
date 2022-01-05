@@ -32,20 +32,20 @@ data.categories$iPhone <- ifelse(data.survey$iPhone == 1, "iPhone", "other smart
 data.categories$Degree <- ifelse(data.survey$Degree == 1, "Undergraduate degree", "Master’s degree or higher")
 data.categories$CompBuy <- ifelse(data.survey$CompBuy == 1, "Yes", "No")
 data.categories$Income <- ifelse(data.survey$Income == 1, "< $40k",
-                          ifelse(data.survey$Income == 2, "$40k - $70k",
-                          ifelse(data.survey$Income == 3, "$71k – $100k",
-                          ifelse(data.survey$Income == 4, "$101k - $175k", "> $175k"))))
+                                 ifelse(data.survey$Income == 2, "$40k - $70k",
+                                        ifelse(data.survey$Income == 3, "$71k – $100k",
+                                               ifelse(data.survey$Income == 4, "$101k - $175k", "> $175k"))))
 
 data.categories$Occupation <- ifelse(data.survey$Occup_Health == 1, "Health services", 
-                              ifelse(data.survey$Occup_Finc == 1, "Financial services",
-                              ifelse(data.survey$Occup_Sales == 1, "Sales",
-                              ifelse(data.survey$Occup_Advt == 1, "Advertising/public relations",
-                              ifelse(data.survey$Occup_Edu == 1, "Education", 
-                              ifelse(data.survey$Occup_Cons == 1, "Construction/transportation/manufacturing/logistics",
-                              ifelse(data.survey$Occup_Eng == 1, "Engineering",
-                              ifelse(data.survey$Occup_Tech == 1, "Technology",
-                              ifelse(data.survey$Occup_Retail == 1, "Retailing/services/restaurant",
-                              ifelse(data.survey$Occup_SMB == 1, "Small-medium business/self-employed", "Other/family caretaker"))))))))))
+                                     ifelse(data.survey$Occup_Finc == 1, "Financial services",
+                                            ifelse(data.survey$Occup_Sales == 1, "Sales",
+                                                   ifelse(data.survey$Occup_Advt == 1, "Advertising/public relations",
+                                                          ifelse(data.survey$Occup_Edu == 1, "Education", 
+                                                                 ifelse(data.survey$Occup_Cons == 1, "Construction/transportation/manufacturing/logistics",
+                                                                        ifelse(data.survey$Occup_Eng == 1, "Engineering",
+                                                                               ifelse(data.survey$Occup_Tech == 1, "Technology",
+                                                                                      ifelse(data.survey$Occup_Retail == 1, "Retailing/services/restaurant",
+                                                                                             ifelse(data.survey$Occup_SMB == 1, "Small-medium business/self-employed", "Other/family caretaker"))))))))))
 data.categories$Occup_Health <- NULL
 data.categories$Occup_Finc <- NULL
 data.categories$Occup_Sales <- NULL
@@ -103,7 +103,7 @@ ggplot(data = data.survey, aes(x = Age)) + #fill: variable for differencing ('ta
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   scale_y_continuous(breaks = seq(0, 120, by = 10)) +
   theme_classic(base_size = 15) # change size of text 
-  #ggsave(file="ageDitribution.png", width=8, height=3, dpi=600) 
+#ggsave(file="ageDitribution.png", width=8, height=3, dpi=600) 
 # --> keine normale Distribution
 
 # WTP --> Willingness to pay
@@ -119,7 +119,7 @@ ggplot(data = data.survey, aes(x = WTP)) + #fill: variable for differencing ('ta
   grid(TRUE)+
   scale_x_continuous(breaks = seq(0, 400, by = 20)) +
   theme_classic(base_size = 10)# change size of text
-  #ggsave(file="wtp_ditribution.png", width=8, height=3, dpi=600) 
+#ggsave(file="wtp_ditribution.png", width=8, height=3, dpi=600) 
 
 # Gender
 data.categories[,"Gender"] <- as.factor(data.categories[,"Gender"])
@@ -223,105 +223,102 @@ summary(data.categories$NewsP) # No 376 - Yes 624
 names(data.categories)
 
 # Grouped Histogram
-# Age + Degree
-ggplot(data = data.categories, aes(x = Age, fill = Degree)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
-  labs(x = "Age", y = "Frequency", fill = "Degree") +
-  scale_y_continuous(limits = c(0, 80), 
-                     breaks = seq(0, 80, by = 10)) +
-  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
-  scale_fill_manual(values = c("steelblue4", "skyblue")) +
-  theme_classic()
-  #ggsave(file="ageFrequencyByDegree.png", width=8, height=3, dpi=600) 
+# Age + Degree -> nicht aussagekräftig
 
 # Age + CompBuy
 ggplot(data = data.categories, aes(x = Age, fill = CompBuy)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  geom_histogram(bins = 30, col = "white") +
   labs(x = "Age", y = "Frequency", fill = "Company provides Technology") +
-  scale_y_continuous(limits = c(0, 75), 
-                     breaks = seq(0, 75, by = 10)) +
+  scale_y_continuous(limits = c(0, 105), 
+                     breaks = seq(0, 105, by = 5)) +
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   scale_fill_manual(values = c("steelblue4", "skyblue")) +
   theme_classic()
-  ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600) 
+ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600)
 
-# Age + Occupation Bars werden nicht angezeigt.
-#ggplot(data = data.categories, aes(x = Age, fill = Occupation)) +
- # geom_histogram(bins = 20, col = "white", position = "dodge") +
-  #labs(x = "Age", y = "Frequency", fill = "Occupation") +
-  #scale_y_continuous(limits = c(0, 10), 
-  #                   breaks = seq(0, 10, by = 10)) +
-  #scale_x_continuous(breaks = seq(0, 50, by = 1)) +
-  #scale_fill_manual(values = c("steelblue4", "skyblue")) +
-  #theme_classic()
-  #ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600)
+ggplot(data.categories, aes(Age, colour = CompBuy)) +
+  geom_freqpoly(binwidth = 5)+
+  labs(x = "Willingness to Pay", y = "Frequency", fill = "Income") +
+  scale_y_continuous(limits = c(0, 300), 
+                     breaks = seq(0, 300, by = 5)) +
+  scale_x_continuous(breaks = seq(0, 100, by = 1)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue", "darkblue")) +
+  theme_classic()
+
+# Age + Occupation -> nicht aussagekräftig, da zu viele Kategorien in Occupation
 
 # Age + Gender
 ggplot(data = data.categories, aes(x = Age, fill = Gender)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  geom_histogram(bins = 20, col = "white") +
   labs(x = "Age", y = "Frequency", fill = "Gender") +
-  scale_y_continuous(limits = c(0, 80), 
-                     breaks = seq(0, 80, by = 10)) +
+  scale_y_continuous(limits = c(0, 110), 
+                     breaks = seq(0, 110, by = 10)) +
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   scale_fill_manual(values = c("steelblue4", "skyblue")) +
   theme_classic()
-  #ggsave(file="ageFrequencyByGender.png", width=8, height=3, dpi=600) 
+ggsave(file="ageFrequencyByGender.png", width=8, height=3, dpi=600) 
 
-# Age + iPhone
+# Age + iPhone ?
 ggplot(data = data.categories, aes(x = Age, fill = iPhone)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  geom_histogram(bins = 20, col = "white") +
   labs(x = "Age", y = "Frequency", fill = "iPhone") +
-  scale_y_continuous(limits = c(0, 60), 
-                     breaks = seq(0, 60, by = 10)) +
+  scale_y_continuous(limits = c(0, 110), 
+                     breaks = seq(0, 110, by = 10)) +
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   scale_fill_manual(values = c("steelblue4", "skyblue")) +
   theme_classic()
 #ggsave(file="ageFrequencyByiPhone.png", width=8, height=3, dpi=600) 
 
-# Age + AmznP
+# Age + AmznP ?
 ggplot(data = data.categories, aes(x = Age, fill = AmznP)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  geom_histogram(bins = 20, col = "white") +
   labs(x = "Age", y = "Frequency", fill = "AmznP") +
-  scale_y_continuous(limits = c(0, 55), 
-                     breaks = seq(0, 55, by = 5)) +
+  scale_y_continuous(limits = c(0, 110), 
+                     breaks = seq(0, 110, by = 5)) +
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   scale_fill_manual(values = c("steelblue4", "skyblue")) +
   theme_classic()
 #ggsave(file="ageFrequencyByAmznP.png", width=8, height=3, dpi=600) 
 
-# Age + Income
-ggplot(data = data.categories, aes(x = Age, fill = Income)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
+# Age + Income ?
+ggplot(data.categories, aes(Age, colour = Income)) +
+  geom_freqpoly(binwidth = 2)+
   labs(x = "Age", y = "Frequency", fill = "Income") +
-  scale_y_continuous(limits = c(0, 45), 
-                     breaks = seq(0, 45, by = 5)) +
-  scale_x_continuous(breaks = seq(0, 50, by = 1)) +
-  #scale_fill_manual(values = c("steelblue4", "skyblue")) + # Farbe überarbeiten, falls Plot verwendet wird.
+  scale_y_continuous(limits = c(0, 70), 
+                     breaks = seq(0, 70, by = 5)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 2)) +
+  scale_fill_manual(values = c("steelblue4", "skyblue", "darkblue")) +
   theme_classic()
-#ggsave(file="ageFrequencyByIncome.png", width=8, height=3, dpi=600) 
 
 # WTP + iPhone
 ggplot(data = data.categories, aes(x = WTP, fill = iPhone)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
+  geom_histogram(bins = 20, col = "white") +
   labs(x = "WTP", y = "Frequency", fill = "iPhone") +
-  scale_y_continuous(limits = c(0, 50), 
-                     breaks = seq(0, 50, by = 5)) +
+  scale_y_continuous(limits = c(0, 160), 
+                     breaks = seq(0, 160, by = 5)) +
   scale_x_continuous(breaks = seq(0, 400, by = 20)) +
   scale_fill_manual(values = c("steelblue4", "skyblue")) +
   theme_classic()
 #ggsave(file="WTFFrequencyByiPhone.png", width=8, height=3, dpi=600) 
 
-# WTP + iPhone
-ggplot(data = data.categories, aes(x = WTP, fill = CompBuy)) +
-  geom_histogram(bins = 20, col = "white", position = "dodge") +
-  labs(x = "WTP", y = "Frequency", fill = "Company provides Technology") +
-  scale_y_continuous(limits = c(0, 120), 
-                     breaks = seq(0, 120, by = 10)) +
+# WTP + income
+data.categories$Income <- ifelse(data.categories$Income == "< $40k", "< $70k",
+                                 ifelse(data.categories$Income == "$40k - $70k", "< $70k",
+                                        ifelse(data.categories$Income == "> $175k", "> $100k",
+                                               ifelse(data.categories$Income == "$101k - $175k", "> $100k", "$71k – $100k"))))
+
+ggplot(data.categories, aes(WTP, colour = Income)) +
+  geom_freqpoly(binwidth = 20)+
+  labs(x = "Willingness to Pay", y = "Frequency", fill = "Income") +
+  scale_y_continuous(limits = c(0, 70), 
+                     breaks = seq(0, 70, by = 5)) +
   scale_x_continuous(breaks = seq(0, 400, by = 20)) +
-  scale_fill_manual(values = c("steelblue4", "skyblue")) +
+  scale_fill_manual(values = c("steelblue4", "skyblue", "darkblue")) +
   theme_classic()
-#ggsave(file="WTFFrequencyByCompBuy.png", width=8, height=3, dpi=600) 
+ggsave(file="WTFFrequencyByIncome.png", width=8, height=3, dpi=600) 
+
+
+
 
 names(data.categories)
 
-  
