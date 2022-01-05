@@ -243,7 +243,7 @@ ggplot(data = data.categories, aes(x = Age, fill = CompBuy)) +
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   scale_fill_manual(values = c("steelblue4", "skyblue")) +
   theme_classic()
-  #ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600) 
+  ggsave(file="ageFrequencyByCombBuy.png", width=8, height=3, dpi=600) 
 
 # Age + Occupation Bars werden nicht angezeigt.
 #ggplot(data = data.categories, aes(x = Age, fill = Occupation)) +
