@@ -245,3 +245,4 @@ table(data.dummies$cluster) #bei 3: 176 #216 #608
 table(data.dummies$cluster_kmeans) #bei 3: 386 384 230 BESSER
 
 head(data.dummies)
+#fertiger Datensatz
