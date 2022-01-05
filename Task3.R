@@ -22,7 +22,7 @@ head(seg.df)
 
 # Step 1: Split the data into training and test sets ===========================
 set.seed(04625)   # fix the seed for reproducability
-train.pop <- 0.70 # we will use 70-30% split
+train.pop <- 0.60 # we will use 60-40% split
 N <- nrow(seg.df) # total sample size
 
 # randomly sample 65\% of observations
