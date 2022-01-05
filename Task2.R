@@ -246,3 +246,9 @@ table(data.dummies$cluster_kmeans) #bei 3: 386 384 230 BESSER
 
 head(data.dummies)
 #fertiger Datensatz
+
+data.classification <- data.dummies[,-42]
+head(data.classification)
+getwd()
+write.csv(data.classification, file = "data.classification.csv", row.names = FALSE)
+
