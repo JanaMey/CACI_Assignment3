@@ -150,7 +150,7 @@ ggplot(VRC, aes(x = K, y = value)) +
 # Describe the clusters on observable characteristic ---------------------------
 # We proceed with complete linkage and 6-cluster solution
 # combine cluster solutions with initial data frame
-data.dummies$cluster <- cutree(cl.ward, 4)
+data.dummies$cluster <- cutree(cl.ward, 3)
 head(data.dummies)
 dim(data.dummies)
 
@@ -192,7 +192,7 @@ ggplot(data = clust.mean_long, aes(x = variable, y = value,
 
 # As the k-means initial partition is random, fix the seed for reproducability
 set.seed(185) #random number 
-cl.kmeans <- kmeans(data.dummies.sc, centers = 4) #we conitnue with 3 clusters like before
+cl.kmeans <- kmeans(data.dummies.sc, centers = 3) #we conitnue with 3 clusters like before
 
 str(cl.kmeans)
 
@@ -244,4 +244,4 @@ clusplot(data.dummies.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
 table(data.dummies$cluster) #bei 3: 176 #216 #608
 table(data.dummies$cluster_kmeans) #bei 3: 386 384 230 BESSER
 
-#What is better? Different results?
+head(data.dummies)
