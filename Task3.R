@@ -122,6 +122,29 @@ nrow(test.df)
 logistic <- multinom(segment ~ ., data = train.df)
 summary(logistic)
 
+# # Coefficents
+# t(round(summary(logistic)$coefficients, 2)) # t for transpose
+# 
+# # standard errors
+# t(round(summary(logistic)$standard.errors, 3))
+# 
+# 
+# # Does not include p-value calculation for the regression coefficients, 
+# # so we calculate p-values using Wald tests (here z-tests).
+# z <- summary(logistic)$coefficients/summary(logistic)$standard.errors
+# 
+# # 2-tailed z test
+# p <- (1 - pnorm(abs(z), 0, 1)) * 2
+# round(t(p), 3)
+# 
+# 
+# # Compute odds ratio
+# x = exp(summary(logistic)$coefficients)
+# 
+# round(t(x), 2)
+# round(x[3, -1], 2)
+
+
 # Naive Bayes 
 nb <- naiveBayes(segment ~ ., data = train.df)
 (nb)
@@ -154,4 +177,19 @@ fit <- data.frame(model = c("Logistic", "Naive Bayes", "Random Forest"),
                                 adjustedRandIndex(test.df$seg_rf, test.df$segment)) * 100)
 
 fit
+str(test.df[, 1:27])
+# Comparison of methods --------------------------------------------------------
+clusplot(test.df[, 1:27], test.df$seg_log, 
+         color = TRUE, shade = TRUE,
+         labels = 2, lines = 0, 
+         main = "Logistic Regression classification")
 
+clusplot(test.df[, 1:27], test.df$seg_nb, 
+         color = TRUE, shade = TRUE,
+         labels = 2, lines = 0, 
+         main = "Naive Bayes classification")
+
+clusplot(test.df[, 1:27], test.df$seg_rf, 
+         color = TRUE, shade = TRUE,
+         labels = 2, lines = 0, 
+         main = "Random Forest classification")
