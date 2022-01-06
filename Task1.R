@@ -271,14 +271,26 @@ ggplot(data = data.categories, aes(x = Age, fill = iPhone)) +
 
 # Age + AmznP ?
 ggplot(data = data.categories, aes(x = Age, fill = AmznP)) +
-  geom_histogram(bins = 20, col = "white") +
-  labs(x = "Age", y = "Frequency", fill = "AmznP") +
-  scale_y_continuous(limits = c(0, 110), 
-                     breaks = seq(0, 110, by = 5)) +
+  geom_histogram(bins = 30, col = "white") +
+  labs(x = "Age", y = "Frequency", fill = "Amazon Prime Account") +
+  scale_y_continuous(limits = c(0, 105), 
+                     breaks = seq(0, 105, by = 5)) +
   scale_x_continuous(breaks = seq(0, 50, by = 1)) +
   scale_fill_manual(values = c("steelblue4", "skyblue")) +
   theme_classic()
-#ggsave(file="ageFrequencyByAmznP.png", width=8, height=3, dpi=600) 
+ggsave(file="ageFrequencyByAmznP.png", width=8, height=3, dpi=600) 
+
+# Age + AmazonPrime
+ggplot(data.categories, aes(Age, colour = AmznP)) +
+  geom_freqpoly(binwidth = 2)+
+  labs(x = "Age", y = "Frequency", fill = "Amazon Prime") +
+  scale_y_continuous(limits = c(0, 90), 
+                     breaks = seq(0, 90, by = 5)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 2)) +
+  scale_color_discrete(name="Amazon Prime Account", labels = c("No", "Yes"))
+  theme_classic()
+  
+
 
 # Age + Income ?
 ggplot(data.categories, aes(Age, colour = Income)) +
@@ -316,7 +328,6 @@ ggplot(data.categories, aes(WTP, colour = Income)) +
   scale_fill_manual(values = c("steelblue4", "skyblue", "darkblue")) +
   theme_classic()
 ggsave(file="WTFFrequencyByIncome.png", width=8, height=3, dpi=600) 
-
 
 
 
