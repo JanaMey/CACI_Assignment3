@@ -10,8 +10,9 @@ pacman::p_load(reshape2, ggplot2, psych, corrplot, fpc, cluster,
 # urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/smartwatch_survey.csv'
 # data.survey <-read.csv(urlfile)
 # 
-# urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.categories.csv'
-# data.categories <-read.csv(urlfile)
+urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.categories.csv'
+data.categories <-read.csv(urlfile)
+head(data.categories)
 # 
 # urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.dummies.csv'
 # data.dummies <-read.csv(urlfile)
@@ -20,13 +21,85 @@ urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.c
 seg.df <-read.csv(urlfile)
 head(seg.df)
 
-# predictors?
-#wtp bringt 0.5 punkte accurancy
+# predictors? ==================================================================
 predictors <- names(seg.df)[15:42]
 predictors
 seg.df <- seg.df[, c(predictors)]
 colnames(seg.df)[28]  <- "segment"
+seg.df$segment <- as.factor(seg.df$segment) # for boxplot
 head(seg.df)
+
+# Descriptive analysis =========================================================
+#####TODO
+#segmente an data.categories pinnen
+
+# size segment + plot 
+table(seg.df$segment)
+
+ggplot(data = seg.df) +
+  geom_bar(mapping = aes(x = segment, y = ..prop.., group = 1), stat = "count") +
+  labs(y = "Relative Frequency") +
+  #scale_y_continuous(limits = c(0, 0.4)) +
+  theme_classic()
+
+# Grouped by iPhone
+ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+  geom_bar(stat = "count") +
+  labs(y = "Relative Frequency for iPhone") +
+  facet_wrap(.~iPhone) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90))
+
+# Grouped by degree
+ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+  geom_bar(stat = "count") +
+  labs(y = "Relative Frequency for Degree") +
+  facet_wrap(.~Degree) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90))
+
+
+# Grouped by AmznP
+ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+  geom_bar(stat = "count") +
+  labs(y = "Relative Frequency for AmznP") +
+  facet_wrap(.~AmznP) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90))
+
+
+# Grouped by CompBuy
+ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+  geom_bar(stat = "count") +
+  labs(y = "Relative Frequency for CompanyBuy") +
+  facet_wrap(.~CompBuy) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90))
+
+# Grouped by gender
+ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+  geom_bar(stat = "count") +
+  labs(y = "Relative Frequency for Gender") +
+  facet_wrap(.~Female) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90))
+
+######TODO
+# Grouped by media use
+
+# Grouped by occupation
+
+# Grouped by income
+
+
+# Age distribution by segments
+ggplot(data = seg.df, aes(x = segment, y = Age)) +
+  geom_boxplot() +
+  labs(y = "Age") +
+  theme_classic()
+
+# standardize age
+seg.df$Age <- scale(seg.df$Age)
 
 
 # Step 1: Split the data into training and test sets ===========================
