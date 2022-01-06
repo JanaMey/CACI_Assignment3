@@ -133,7 +133,7 @@ VRC.complete = VRC.complete[-1]
 VRC.complete
 
 # save as a data frame
-VRC = data.frame(K = 2:10, complete = VRC.complete, ward = VRC.ward)
+VRC = data.frame(K = 2:10,  ward = VRC.ward) #complete = VRC.complete,
 
 # reshape to long
 VRC = melt(VRC, id.vars = "K")
@@ -143,8 +143,10 @@ ggplot(VRC, aes(x = K, y = value)) +
   geom_point() + geom_line() +
   facet_grid(variable~.) +
   labs(x = "Number of Clusters", 
-       y = "Variance Ratio (Calinski-Harabasz) index") +
-  theme_bw()
+       y = "Variance Ratio index") +
+  theme_bw(base_size = 14)
+ggsave(file="VRC.png", width=8, height=3, dpi=600)  
+
 #6 because theres a peak in the complete linkage?
 
 # Describe the clusters on observable characteristic ---------------------------
