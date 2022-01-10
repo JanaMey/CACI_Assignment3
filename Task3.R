@@ -7,8 +7,9 @@ pacman::p_load(reshape2, ggplot2, psych, corrplot, fpc, cluster,
 # data.dummies ist der Datensatz nur mit Dummies und ohne Kategorien
 
 # Load required dataset ----------------------------------------------------------
-# urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/smartwatch_survey.csv'
-# data.survey <-read.csv(urlfile)
+urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/smartwatch_survey.csv'
+data.survey <-read.csv(urlfile)
+
 # 
 urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.categories.csv'
 data.categories <-read.csv(urlfile)
@@ -21,23 +22,28 @@ urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.c
 seg.df <-read.csv(urlfile)
 head(seg.df)
 
+###TEST INPUT DATA##### 
+# naive bayes need category input data
+####new column segment to data set
+data.categories$segment <- seg.df$cluster_kmeans
+head(data.categories)
+seg.df <- data.categories
+str(seg.df)
+
 # predictors? ==================================================================
-predictors1 <- names(seg.df)[15:26]
-predictors2 <- names(seg.df)[35:42]
-#predictors <- names(seg.df)[15:42]
-predictors1
-predictors2
+predictors1 <- names(seg.df)[14:26]
+predictors2 <- names(seg.df)[28:30]
 seg.df <- seg.df[, c(predictors1,predictors2)]
-colnames(seg.df)[20]  <- "segment"
+#colnames(seg.df)[20]  <- "segment"
 seg.df$segment <- as.factor(seg.df$segment) # for boxplot
 head(seg.df)
 
 # Descriptive analysis =========================================================
-#####TODO
-#segmente an data.categories pinnen
+#####eventuell TODO
+#segmente an data.categories pinnen und printen
 
 # size segment + plot
-table(seg.df$segment)
+# table(seg.df$segment)
 # 
 # ggplot(data = seg.df) +
 #   geom_bar(mapping = aes(x = segment, y = ..prop.., group = 1), stat = "count") +
@@ -63,12 +69,12 @@ table(seg.df$segment)
 # 
 # 
 # Grouped by AmznP
-ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
-  geom_bar(stat = "count") +
-  labs(y = "Relative Frequency for AmznP") +
-  facet_wrap(.~AmznP) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 90))
+# ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+#   geom_bar(stat = "count") +
+#   labs(y = "Relative Frequency for AmznP") +
+#   facet_wrap(.~AmznP) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 90))
 # 
 # 
 # # Grouped by CompBuy
@@ -80,12 +86,12 @@ ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
 #   theme(axis.text.x = element_text(angle = 90))
 # 
 # Grouped by gender
-ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
-  geom_bar(stat = "count") +
-  labs(y = "Relative Frequency for Gender") +
-  facet_wrap(.~Female) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 90))
+# ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+#   geom_bar(stat = "count") +
+#   labs(y = "Relative Frequency for Gender") +
+#   facet_wrap(.~Female) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 90))
 # 
 # ######TODO
 # # Grouped by media use
@@ -96,14 +102,17 @@ ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
 # 
 # 
 # Age distribution by segments
-ggplot(data = seg.df, aes(x = segment, y = Age)) +
-  geom_boxplot() +
-  labs(y = "Age") +
-  theme_classic()
+# ggplot(data = seg.df, aes(x = segment, y = Age)) +
+#   geom_boxplot() +
+#   labs(y = "Age") +
+#   theme_classic()
 
-#standardize
+#######standardization
 # standardize age
-#seg.df$Age <- scale(seg.df$Age) #=> macht Model schlechter
+# seg.df$Age <- scale(seg.df$Age)
+# seg.df$WTP <- scale(seg.df$WTP)
+# summary(seg.df)
+
 
 # Step 1: Split the data into training and test sets ===========================
 set.seed(04625)   # fix the seed for reproducability
@@ -121,37 +130,41 @@ nrow(train.df)
 test.df <- seg.df[-train.cases, ]
 nrow(test.df)
 
+
 # Step 2: Train the prediction model ===========================================
 ##### Regression
+##TODO: ohne Income, media use, occupation
 logistic <- multinom(segment ~ ., data = train.df)
+#logistic <- multinom(segment ~ WTP + iPhone+ CompBuy + Age + AmznP + Degree + Gender +FB_Insta + Twit + Snap + YouTube + Pod_radio + TV + NewsP + Income, data = train.df)
 summary(logistic)
+#tetst
+# ohne occup, media_use, income: 74.25
+# ohne occup, income: 77.5
+# ohne income: 78.00
+# ohne occup: 77.5
 
-
-# # Coefficents
+str(train.df)
+# Coefficents
 coeff = (round(summary(logistic)$coefficients, 2)) # t for transpose
-coeff <-as.data.frame(coeff)
+coeff <-as.data.frame(coeff) 
 #write.csv(coeff,"C:/Users/Lilli/Google Drive/2021CACI/LogReg.csv", row.names = FALSE)
 
 # standard errors
 error<-as.data.frame(t(round(summary(logistic)$standard.errors, 3)))
-#write.csv(error,"C:/Users/Lilli/Google Drive/2021CACI/LogError.csv", row.names = FALSE)
+#write.csv(error,"C:/Users/Lilli/Google Drive/2021CACI/LogError.csv", row.names = FALSE)FB_Insta
 
 
-# Does not include p-value calculation for the regression coefficients,
+# p-value calculation for the regression coefficients,
 # so we calculate p-values using Wald tests (here z-tests).
 z <- summary(logistic)$coefficients/summary(logistic)$standard.errors
-
 # 2-tailed z test
 p <- (1 - pnorm(abs(z), 0, 1)) * 2
-
 pValue <-as.data.frame(round(t(p), 3))
 pValue
 #write.csv(pValue,"C:/Users/Lilli/Google Drive/2021CACI/Log_pValue.csv", row.names = FALSE)
 
-# Compute odds ratio
+# odds ratio
 x = exp(summary(logistic)$coefficients)
-
-
 #round(x[1, -1], 2)
 odds <-as.data.frame(round(t(x), 2))
 odds
@@ -190,20 +203,23 @@ fit <- data.frame(model = c("Logistic", "Naive Bayes", "Random Forest"),
                                 adjustedRandIndex(test.df$seg_rf, test.df$segment)) * 100)
 
 fit
-str(test.df[, 1:27])
-# Comparison of methods --------------------------------------------------------
-clusplot(test.df[, 1:27], test.df$seg_log, 
-         color = TRUE, shade = TRUE,
-         labels = 2, lines = 0, 
-         main = "Logistic Regression classification")
+#str(test.df[, 1:27])
 
-clusplot(test.df[, 1:27], test.df$seg_nb, 
-         color = TRUE, shade = TRUE,
-         labels = 2, lines = 0, 
-         main = "Naive Bayes classification")
 
-clusplot(test.df[, 1:27], test.df$seg_rf, 
-         color = TRUE, shade = TRUE,
-         labels = 2, lines = 0, 
-         main = "Random Forest classification")
+
+# # Comparison of methods --------------------------------------------------------
+# clusplot(test.df[, 1:27], test.df$seg_log, 
+#          color = TRUE, shade = TRUE,
+#          labels = 2, lines = 0, 
+#          main = "Logistic Regression classification")
+# 
+# clusplot(test.df[, 1:27], test.df$seg_nb, 
+#          color = TRUE, shade = TRUE,
+#          labels = 2, lines = 0, 
+#          main = "Naive Bayes classification")
+# 
+# clusplot(test.df[, 1:27], test.df$seg_rf, 
+#          color = TRUE, shade = TRUE,
+#          labels = 2, lines = 0, 
+#          main = "Random Forest classification")
 
