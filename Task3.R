@@ -22,10 +22,13 @@ seg.df <-read.csv(urlfile)
 head(seg.df)
 
 # predictors? ==================================================================
-predictors <- names(seg.df)[15:42]
-predictors
-seg.df <- seg.df[, c(predictors)]
-colnames(seg.df)[28]  <- "segment"
+predictors1 <- names(seg.df)[15:26]
+predictors2 <- names(seg.df)[35:42]
+#predictors <- names(seg.df)[15:42]
+predictors1
+predictors2
+seg.df <- seg.df[, c(predictors1,predictors2)]
+colnames(seg.df)[20]  <- "segment"
 seg.df$segment <- as.factor(seg.df$segment) # for boxplot
 head(seg.df)
 
@@ -33,32 +36,32 @@ head(seg.df)
 #####TODO
 #segmente an data.categories pinnen
 
-# size segment + plot 
+# size segment + plot
 table(seg.df$segment)
-
-ggplot(data = seg.df) +
-  geom_bar(mapping = aes(x = segment, y = ..prop.., group = 1), stat = "count") +
-  labs(y = "Relative Frequency") +
-  #scale_y_continuous(limits = c(0, 0.4)) +
-  theme_classic()
-
-# Grouped by iPhone
-ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
-  geom_bar(stat = "count") +
-  labs(y = "Relative Frequency for iPhone") +
-  facet_wrap(.~iPhone) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 90))
-
-# Grouped by degree
-ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
-  geom_bar(stat = "count") +
-  labs(y = "Relative Frequency for Degree") +
-  facet_wrap(.~Degree) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 90))
-
-
+# 
+# ggplot(data = seg.df) +
+#   geom_bar(mapping = aes(x = segment, y = ..prop.., group = 1), stat = "count") +
+#   labs(y = "Relative Frequency") +
+#   #scale_y_continuous(limits = c(0, 0.4)) +
+#   theme_classic()
+# 
+# # Grouped by iPhone
+# ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+#   geom_bar(stat = "count") +
+#   labs(y = "Relative Frequency for iPhone") +
+#   facet_wrap(.~iPhone) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 90))
+# 
+# # Grouped by degree
+# ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+#   geom_bar(stat = "count") +
+#   labs(y = "Relative Frequency for Degree") +
+#   facet_wrap(.~Degree) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 90))
+# 
+# 
 # Grouped by AmznP
 ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
   geom_bar(stat = "count") +
@@ -66,16 +69,16 @@ ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
   facet_wrap(.~AmznP) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90))
-
-
-# Grouped by CompBuy
-ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
-  geom_bar(stat = "count") +
-  labs(y = "Relative Frequency for CompanyBuy") +
-  facet_wrap(.~CompBuy) +
-  theme_classic() +
-  theme(axis.text.x = element_text(angle = 90))
-
+# 
+# 
+# # Grouped by CompBuy
+# ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+#   geom_bar(stat = "count") +
+#   labs(y = "Relative Frequency for CompanyBuy") +
+#   facet_wrap(.~CompBuy) +
+#   theme_classic() +
+#   theme(axis.text.x = element_text(angle = 90))
+# 
 # Grouped by gender
 ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
   geom_bar(stat = "count") +
@@ -83,24 +86,24 @@ ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
   facet_wrap(.~Female) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90))
-
-######TODO
-# Grouped by media use
-
-# Grouped by occupation
-
-# Grouped by income
-
-
+# 
+# ######TODO
+# # Grouped by media use
+# 
+# # Grouped by occupation
+# 
+# # Grouped by income
+# 
+# 
 # Age distribution by segments
 ggplot(data = seg.df, aes(x = segment, y = Age)) +
   geom_boxplot() +
   labs(y = "Age") +
   theme_classic()
 
+#standardize
 # standardize age
-seg.df$Age <- scale(seg.df$Age)
-
+#seg.df$Age <- scale(seg.df$Age) #=> macht Model schlechter
 
 # Step 1: Split the data into training and test sets ===========================
 set.seed(04625)   # fix the seed for reproducability
@@ -119,37 +122,47 @@ test.df <- seg.df[-train.cases, ]
 nrow(test.df)
 
 # Step 2: Train the prediction model ===========================================
+##### Regression
 logistic <- multinom(segment ~ ., data = train.df)
 summary(logistic)
 
+
 # # Coefficents
-# t(round(summary(logistic)$coefficients, 2)) # t for transpose
-# 
-# # standard errors
-# t(round(summary(logistic)$standard.errors, 3))
-# 
-# 
-# # Does not include p-value calculation for the regression coefficients, 
-# # so we calculate p-values using Wald tests (here z-tests).
-# z <- summary(logistic)$coefficients/summary(logistic)$standard.errors
-# 
-# # 2-tailed z test
-# p <- (1 - pnorm(abs(z), 0, 1)) * 2
-# round(t(p), 3)
-# 
-# 
-# # Compute odds ratio
-# x = exp(summary(logistic)$coefficients)
-# 
-# round(t(x), 2)
-# round(x[3, -1], 2)
+coeff = (round(summary(logistic)$coefficients, 2)) # t for transpose
+coeff <-as.data.frame(coeff)
+#write.csv(coeff,"C:/Users/Lilli/Google Drive/2021CACI/LogReg.csv", row.names = FALSE)
+
+# standard errors
+error<-as.data.frame(t(round(summary(logistic)$standard.errors, 3)))
+#write.csv(error,"C:/Users/Lilli/Google Drive/2021CACI/LogError.csv", row.names = FALSE)
 
 
-# Naive Bayes 
+# Does not include p-value calculation for the regression coefficients,
+# so we calculate p-values using Wald tests (here z-tests).
+z <- summary(logistic)$coefficients/summary(logistic)$standard.errors
+
+# 2-tailed z test
+p <- (1 - pnorm(abs(z), 0, 1)) * 2
+
+pValue <-as.data.frame(round(t(p), 3))
+pValue
+#write.csv(pValue,"C:/Users/Lilli/Google Drive/2021CACI/Log_pValue.csv", row.names = FALSE)
+
+# Compute odds ratio
+x = exp(summary(logistic)$coefficients)
+
+
+#round(x[1, -1], 2)
+odds <-as.data.frame(round(t(x), 2))
+odds
+#write.csv(odds,"C:/Users/Lilli/Google Drive/2021CACI/LogOdds.csv", row.names = FALSE)
+
+##### Naive Bayes 
 nb <- naiveBayes(segment ~ ., data = train.df)
 (nb)
 
-# Random Forest 
+
+##### Random Forest 
 set.seed(98040)
 head(train.df)
 
@@ -193,3 +206,4 @@ clusplot(test.df[, 1:27], test.df$seg_rf,
          color = TRUE, shade = TRUE,
          labels = 2, lines = 0, 
          main = "Random Forest classification")
+
