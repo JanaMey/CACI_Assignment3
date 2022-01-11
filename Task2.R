@@ -16,11 +16,24 @@ data.categories <-read.csv(urlfile)
 urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.dummies.csv'
 data.dummies <-read.csv(urlfile)
 
-head(data.dummies)
+head(data.survey)
+
+names(data.survey)[2] <- "Innovation"
+names(data.survey)[3] <- "Constant C."
+names(data.survey)[4] <- "Creative C."
+names(data.survey)[5] <- "Timely Info"
+names(data.survey)[6] <- "S.M. Trans."
+names(data.survey)[7] <- "S.M. Life"
+names(data.survey)[8] <- "Management"
+names(data.survey)[9] <- "Sturdiness"
+names(data.survey)[10] <- "Photo"
+names(data.survey)[11] <- "Wellness"
+names(data.survey)[12] <- "Athlete"
+names(data.survey)[13] <- "Style"
 
 # Plot the distribution of importance ratings
 # using pairs.panels function in psych package
-pairs.panels(data.dummies[, 2:14],
+pairs.panels(data.survey[, 2:14],
              method = "pearson",  # correlation method
              hist.col = "grey60", # color of hist. bins
              density = TRUE,      # show density plots
@@ -30,13 +43,13 @@ pairs.panels(data.dummies[, 2:14],
 # Hierarchical Clustering
 # What proximity measure is appropriate? ---------------------------------------
 # Standardize the data -> because means and scale differs
-data.dummies.sc = data.dummies[, 2:14] #only the evals
-data.dummies.sc = scale(data.dummies.sc) #center 0 and s.d. is 1
-head(data.dummies.sc)
-summary(data.dummies.sc)
+data.survey.sc = data.survey[, 2:14] #only the evals
+data.survey.sc = scale(data.survey.sc) #center 0 and s.d. is 1
+head(data.survey.sc)
+summary(data.survey.sc)
 
 # Compute Euclidean distance
-dist.eucl <- dist(data.dummies.sc) #method by default is euclidean, you can specify manhattan etc.
+dist.eucl <- dist(data.survey.sc) #method by default is euclidean, you can specify manhattan etc.
 as.matrix(dist.eucl)[1:6, 1:6] 
 
 
@@ -100,7 +113,7 @@ plot(as.dendrogram(cl.ward), leaflab = "none", ylim = c(0, 70))
 rect.hclust(cl.ward, k = 3, border = "darkred")
 #looks reasonable
 # size of clusters?
-table(cutree(cl.ward, 4))
+table(cutree(cl.ward, 3))
 #398 189 413
 #398 189 284 129 -> BEST
 table(cutree(cl.ward, 5))
@@ -152,21 +165,21 @@ ggsave(file="VRC.png", width=8, height=3, dpi=600)
 # Describe the clusters on observable characteristic ---------------------------
 # We proceed with complete linkage and 6-cluster solution
 # combine cluster solutions with initial data frame
-data.dummies$cluster <- cutree(cl.ward, 3)
-head(data.dummies)
-dim(data.dummies)
+data.survey$cluster <- cutree(cl.ward, 3)
+head(data.survey)
+dim(data.survey)
 
 
 #compute the mean
-clust.mean <- aggregate(data.dummies[, -c(1,42)], 
-                        by = list(cluster = data.dummies$cluster), 
+clust.mean <- aggregate(data.survey[, -c(1,39)], 
+                        by = list(cluster = data.survey$cluster), 
                         function(x)c(mean = round(mean(x), 2)))
 clust.mean
 dim(clust.mean)
 
 
 # visualize differences for ratings
-clust.mean_long <- melt(clust.mean[, -c(14:42)], id.vars = "cluster") 
+clust.mean_long <- melt(clust.mean[, -c(14:38)], id.vars = "cluster") 
 head(clust.mean_long)
 
 ggplot(data = clust.mean_long, aes(x = variable, y = value, 
@@ -196,7 +209,7 @@ ggplot(data = clust.mean_long, aes(x = variable, y = value,
 
 # As the k-means initial partition is random, fix the seed for reproducability
 set.seed(185) #random number 
-cl.kmeans <- kmeans(data.dummies.sc, centers = 3) #we conitnue with 3 clusters like before
+cl.kmeans <- kmeans(data.survey.sc, centers = 3) #we conitnue with 3 clusters like before
 
 str(cl.kmeans)
 
@@ -204,17 +217,17 @@ str(cl.kmeans)
 cl.kmeans$cluster
 
 # combine with the original data
-data.dummies$cluster_kmeans <- cl.kmeans$cluster
-head(data.dummies)
-dim(data.dummies)
+data.survey$cluster_kmeans <- cl.kmeans$cluster
+head(data.survey)
+dim(data.survey)
 
-clust.kmean <- aggregate(data.dummies[, -c(42,43)], 
-                         by = list(cluster = data.dummies$cluster_kmeans), 
+clust.kmean <- aggregate(data.survey[, -c(39,40)], 
+                         by = list(cluster = data.survey$cluster_kmeans), 
                          function(x)c(mean = round(mean(x), 2)))
 clust.kmean
 dim(clust.mean)
 # visualize differences for satisfaction ratings
-clust.kmean_long <- melt(clust.kmean[, -c(2,15:41)], id.vars = "cluster") 
+clust.kmean_long <- melt(clust.kmean[, -c(2,15:38)], id.vars = "cluster") 
 
 ggplot(data = clust.kmean_long, aes(x = variable, y = value, 
                                     fill = as.factor(cluster))) +
@@ -225,33 +238,34 @@ ggplot(data = clust.kmean_long, aes(x = variable, y = value,
 
 
 #Look at differences in clusters with Ward
-head(data.dummies)
-dim(data.dummies)
-t(aggregate(data.dummies[, -c(1, 15:43)], 
-            by = list(cluster = data.dummies$cluster), 
+head(data.survey)
+dim(data.survey)
+t(aggregate(data.survey[, -c(1, 15:40)], 
+            by = list(cluster = data.survey$cluster), 
             function(x)c(mean = round(mean(x), 2))))
 
 #Look at differences in clusters with K-Means
-t(aggregate(data.dummies[, -c(1, 15:43)], 
-            by = list(cluster = data.dummies$cluster_kmeans), 
+t(aggregate(data.survey[, -c(1, 15:40)], 
+            by = list(cluster = data.survey$cluster_kmeans), 
             function(x)c(mean = round(mean(x), 2))))
 
 # how well clusters are separate with ward and k-means
-clusplot(data.dummies.sc, cutree(cl.ward, 4), color = TRUE , shade = TRUE ,
+clusplot(data.survey.sc, cutree(cl.ward, 4), color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "Ward's method plot")
 
 # k-means
-clusplot(data.dummies.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
+clusplot(data.survey.sc, cl.kmeans$cluster, color = TRUE , shade = TRUE ,
          labels = 6, lines = 0, main = "K-means cluster plot")
 
 
-table(data.dummies$cluster) #bei 3: 176 #216 #608
-table(data.dummies$cluster_kmeans) #bei 3: 386 384 230 BESSER
+table(data.survey$cluster)
+table(data.survey$cluster_kmeans) 
 
-head(data.dummies)
+head(data.survey)
+dim(data.survey)
 #fertiger Datensatz
 
-data.classification <- data.dummies[,-42]
+data.classification <- data.survey[,-39]
 head(data.classification)
 getwd()
 write.csv(data.classification, file = "data.classification.csv", row.names = FALSE)
