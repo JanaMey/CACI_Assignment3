@@ -291,6 +291,14 @@ ggplot(data.categories, aes(Age, colour = AmznP)) +
   theme_classic()
   
 
+#Age + WTP
+ggplot(data.categories, aes(Age, colour = WTP)) +
+  geom_freqpoly(binwidth = 2)+
+  labs(x = "Age", y = "Frequency", fill = "WTP",
+                       breaks = seq(0, 90, by = 5)) +
+  scale_x_continuous(breaks = seq(0, 50, by = 2)) +
+theme_classic()
+  
 
 # Age + Income ?
 ggplot(data.categories, aes(Age, colour = Income)) +
