@@ -173,9 +173,11 @@ ggplot(data = clust.mean_long, aes(x = variable, y = value,
                                    fill = as.factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(x = "", y = "Mean satisfaction rating", fill = "Cluster") +
-  scale_fill_grey(start = 0.2, end = 0.8) +
-  theme_classic()
-
+  #scale_fill_grey(start = 0.2, end = 0.8) +
+  scale_fill_manual(values = c("grey","steelblue4", "skyblue"))+
+  theme_classic(base_size = 15)+
+  theme(axis.text.x=element_text(angle = 25, hjust = 1))
+#"steelblue4", "skyblue"
 
 
 # WTP distibution across clusters
