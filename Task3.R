@@ -12,9 +12,9 @@ data.survey <-read.csv(urlfile)
 head(data.survey)
 
 # 
-urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.categories.csv'
-data.categories <-read.csv(urlfile)
-head(data.categories)
+# urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.categories.csv'
+# data.categories <-read.csv(urlfile)
+# head(data.categories)
 # 
 # urlfile<-'https://raw.githubusercontent.com/JanaMey/CACI_Assignment3/main/data.dummies.csv'
 # data.dummies <-read.csv(urlfile)
@@ -26,34 +26,49 @@ head(seg.df)
 ###TEST INPUT DATA##### 
 # naive bayes need category input data
 ####new column segment to data set
-data.categories$segment <- seg.df$cluster_kmeans
-head(data.categories)
-seg.df <- data.categories
+# data.categories$segment <- seg.df$cluster_kmeans
+# head(data.categories)
+# seg.df <- data.categories
+# str(seg.df)
+
+###test
+data.survey$segment <- seg.df$cluster_kmeans
+head(data.survey)
+seg.df <- data.survey
 str(seg.df)
 
 # predictors? ==================================================================
-predictors1 <- names(seg.df)[14:26]
-predictors2 <- names(seg.df)[28:30]
-seg.df <- seg.df[, c(predictors1,predictors2)]
-#colnames(seg.df)[20]  <- "segment"
+# predictors1 <- names(seg.df)[14:26]
+# predictors2 <- names(seg.df)[28:30]
+# seg.df <- seg.df[, c(predictors1,predictors2)]
+# #colnames(seg.df)[20]  <- "segment"
+# seg.df$segment <- as.factor(seg.df$segment) # for boxplot
+
+#test
+predictors <- names(seg.df)[14:37]
+seg.df <- seg.df[, c(predictors, "segment")]
+# #colnames(seg.df)[20]  <- "segment"
 seg.df$segment <- as.factor(seg.df$segment) # for boxplot
 
+names <- c(names(seg.df)[2:21], "Female", "Degree","segment")
+seg.df[,names] <- lapply(seg.df[,names] , factor)
+str(seg.df)
 
 # Descriptive analysis =========================================================
 #####eventuell TODO
 #segmente an data.categories pinnen und printen
 
 #corrplot
-cor(seg.df[,1], seg.df[,12], method = "pearson")
-#-0.00118738 => no correlation
-corrplot(cor(seg.df[, c(1,12)]),
-                  method = 'number',
-                  type = "upper",
-                  number.cex = 0.9,
-                  tl.cex = 0.9)
+# cor(seg.df[,1], seg.df[,12], method = "pearson")
+# #-0.00118738 => no correlation
+# corrplot(cor(seg.df[, c(1,12)]),
+#                   method = 'number',
+#                   type = "upper",
+#                   number.cex = 0.9,
+#                   tl.cex = 0.9)
 
 # size segment + plot
-# table(seg.df$segment)
+table(seg.df$segment)
 # 
 # ggplot(data = seg.df) +
 #   geom_bar(mapping = aes(x = segment, y = ..prop.., group = 1), stat = "count") +
