@@ -95,6 +95,10 @@ summary(data.survey$Age) # Mean 35,52 ; Median 36
 #plot(data.survey$Age) # ca 20 - 50 Jahre
 max(data.survey$Age) #47
 min(data.survey$Age) #24
+female <- subset(data.survey, data.survey$Female == 1) 
+summary(female$Age) # mean 34.9
+male <- subset(data.survey, data.survey$Female == 0) 
+summary(male$Age) # mean 36.32
 #boxplot(data.survey$Age) # keine Outlier
 ggplot(data = data.survey, aes(x = Age)) + #fill: variable for differencing ('target)
   geom_histogram(bins = 45, col = "white", fill ="grey24") + # position dodge: next to each other
@@ -136,6 +140,10 @@ prop.table(table(data.categories$Gender)) # Female 0.566 - Male 0.434
 # Occupation
 data.categories[,"Occupation"] <- as.factor(data.categories[,"Occupation"])
 summary(data.categories$Occupation)
+female.categories <- subset(data.categories, data.categories$Gender == "Female") 
+female.categories[,"Income"] <- as.factor(female.categories[,"Income"])
+summary(female.categories$Income)
+
 # 103 Advertising/public relations 0.104
 # 73 Construction/transportation/manufacturing/logistics 0.074
 # 85 Education 0.085
@@ -163,6 +171,10 @@ data.categories[,"CompBuy"] <- as.factor(data.categories[,"CompBuy"])
 plot(data.categories$CompBuy)
 summary(data.categories$CompBuy) # No 799 - Yes 201
 prop.table(table(data.categories$CompBuy)) # 80% nein, fast 20% bekommen Technology von Arbeitgeber gestellt
+CompBuy.categories <- subset(data.categories, data.categories$CompBuy == "Yes") 
+CompBuy.categories[,"Occupation"] <- as.factor(CompBuy.categories[,"Occupation"])
+summary(CompBuy.categories$Occupation)
+
 
 # AmznP
 data.categories[,"AmznP"] <- as.factor(data.categories[,"AmznP"])
