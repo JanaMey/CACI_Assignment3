@@ -185,11 +185,14 @@ head(clust.mean_long)
 ggplot(data = clust.mean_long, aes(x = variable, y = value, 
                                    fill = as.factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "", y = "Mean satisfaction rating", fill = "Cluster") +
+  labs(x = "", y = "Mean Importance Rating", fill = "Cluster") +
   #scale_fill_grey(start = 0.2, end = 0.8) +
   scale_fill_manual(values = c("grey","steelblue4", "skyblue"))+
-  theme_classic(base_size = 15)+
-  theme(axis.text.x=element_text(angle = 25, hjust = 1))
+  scale_y_continuous(limits = c(0, +6), 
+                     breaks = seq(0, 6, by = 1)) +
+  theme_bw(base_size = 16)+
+  theme(axis.text.x=element_text(angle = 20, hjust = 1))
+ggsave(file="MeanRating.png", width=9, height=5, dpi=600)
 #"steelblue4", "skyblue"
 
 

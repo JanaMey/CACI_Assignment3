@@ -70,11 +70,11 @@ str(seg.df)
 # size segment + plot
 table(seg.df$segment)
 # 
-# ggplot(data = seg.df) +
-#   geom_bar(mapping = aes(x = segment, y = ..prop.., group = 1), stat = "count") +
-#   labs(y = "Relative Frequency") +
-#   #scale_y_continuous(limits = c(0, 0.4)) +
-#   theme_classic()
+ggplot(data = seg.df) +
+  geom_bar(mapping = aes(x = segment, y = ..prop.., group = 1), stat = "count") +
+  labs(y = "Relative Frequency") +
+  #scale_y_continuous(limits = c(0, 0.4)) +
+  theme_classic()
 # 
 # # Grouped by iPhone
 # ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
@@ -110,14 +110,14 @@ table(seg.df$segment)
 #   theme_classic() +
 #   theme(axis.text.x = element_text(angle = 90))
 # 
-# Grouped by gender
-# ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
-#   geom_bar(stat = "count") +
-#   labs(y = "Relative Frequency for Gender") +
-#   facet_wrap(.~Female) +
-#   theme_classic() +
-#   theme(axis.text.x = element_text(angle = 90))
-# 
+#Grouped by gender
+ggplot(data = seg.df, aes(x = segment, y = ..prop.., group = 1)) +
+  geom_bar(stat = "count") +
+  labs(y = "Relative Frequency for Gender") +
+  facet_wrap(.~Female) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90))
+  
 # ######TODO
 # # Grouped by media use
 # 
@@ -127,10 +127,23 @@ table(seg.df$segment)
 # 
 # 
 # Age distribution by segments
-# ggplot(data = seg.df, aes(x = segment, y = Age)) +
-#   geom_boxplot() +
-#   labs(y = "Age") +
-#   theme_classic()
+ggplot(data = seg.df, aes(x = segment, y = Age)) +
+  geom_boxplot() +
+  labs(y = "Age") +
+  theme_classic()
+
+ggplot(data = seg.df, aes(x = segment, y = WTP, fill = segment)) + # Manually specified filling color
+  geom_boxplot() +
+  labs(y = "Willingness to Pay",x = "Cluster") +
+  scale_y_continuous(limits = c(100, 390), 
+                   breaks = seq(100, 390, by = 50)) +
+  scale_fill_manual(values = c("grey","steelblue4", "skyblue")) +
+  guides(fill=guide_legend(title="Cluster"))+
+  theme_bw(base_size = 15)
+ggsave(file="WTP.png", width=6, height=3, dpi=300)
+
+
+
 
 #######standardization
 # standardize age
@@ -160,7 +173,7 @@ nrow(test.df)
 ##### Regression
 ##TODO: ohne Income, media use, occupation
 logistic <- multinom(segment ~ ., data = train.df)
-#logistic <- multinom(segment ~ WTP + iPhone+ CompBuy + Age + AmznP + Degree + Gender +FB_Insta + Twit + Snap + YouTube + Pod_radio + TV + NewsP + Income, data = train.df)
+#logistic <- multinom(segment ~ WTP + iPhone+ CompBuy + Age + AmznP + Degree + Gender , data = train.df)#+FB_Insta + Twit + Snap + YouTube + Pod_radio + TV + NewsP
 summary(logistic)
 #tetst
 # ohne occup, media_use, income: 74.25
@@ -172,10 +185,11 @@ str(train.df)
 # Coefficents
 coeff = (round(summary(logistic)$coefficients, 2)) # t for transpose
 coeff <-as.data.frame(coeff) 
-#write.csv(coeff,"C:/Users/Lilli/Google Drive/2021CACI/LogReg.csv", row.names = FALSE)
+coeff
+write.csv(coeff,"C:/Users/Lilli/Google Drive/2021CACI/LogReg.csv", row.names = TRUE)
 
 # standard errors
-error<-as.data.frame(t(round(summary(logistic)$standard.errors, 3)))
+#error<-as.data.frame(t(round(summary(logistic)$standard.errors, 3)))
 #write.csv(error,"C:/Users/Lilli/Google Drive/2021CACI/LogError.csv", row.names = FALSE)FB_Insta
 
 
@@ -186,14 +200,14 @@ z <- summary(logistic)$coefficients/summary(logistic)$standard.errors
 p <- (1 - pnorm(abs(z), 0, 1)) * 2
 pValue <-as.data.frame(round(t(p), 3))
 pValue
-#write.csv(pValue,"C:/Users/Lilli/Google Drive/2021CACI/Log_pValue.csv", row.names = FALSE)
+write.csv(pValue,"C:/Users/Lilli/Google Drive/2021CACI/Log_pValue.csv", row.names = FALSE)
 
 # odds ratio
 x = exp(summary(logistic)$coefficients)
 #round(x[1, -1], 2)
 odds <-as.data.frame(round(t(x), 2))
 odds
-#write.csv(odds,"C:/Users/Lilli/Google Drive/2021CACI/LogOdds.csv", row.names = FALSE)
+write.csv(odds,"C:/Users/Lilli/Google Drive/2021CACI/LogOdds.csv", row.names = FALSE)
 
 ##### Naive Bayes 
 nb <- naiveBayes(segment ~ ., data = train.df)
@@ -228,23 +242,23 @@ fit <- data.frame(model = c("Logistic", "Naive Bayes", "Random Forest"),
                                 adjustedRandIndex(test.df$seg_rf, test.df$segment)) * 100)
 
 fit
-#str(test.df[, 1:27])
+str(test.df[, 1:27])
 
 
 
 # # Comparison of methods --------------------------------------------------------
-# clusplot(test.df[, 1:27], test.df$seg_log, 
+# clusplot(test.df[, 1:27], test.df$seg_log,
 #          color = TRUE, shade = TRUE,
-#          labels = 2, lines = 0, 
+#          labels = 2, lines = 0,
 #          main = "Logistic Regression classification")
 # 
-# clusplot(test.df[, 1:27], test.df$seg_nb, 
+# clusplot(test.df[, 1:27], test.df$seg_nb,
 #          color = TRUE, shade = TRUE,
-#          labels = 2, lines = 0, 
+#          labels = 2, lines = 0,
 #          main = "Naive Bayes classification")
 # 
-# clusplot(test.df[, 1:27], test.df$seg_rf, 
+# clusplot(test.df[, 1:27], test.df$seg_rf,
 #          color = TRUE, shade = TRUE,
-#          labels = 2, lines = 0, 
+#          labels = 2, lines = 0,
 #          main = "Random Forest classification")
 
