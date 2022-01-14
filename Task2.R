@@ -224,7 +224,7 @@ data.survey$cluster_kmeans <- cl.kmeans$cluster
 head(data.survey)
 dim(data.survey)
 
-clust.kmean <- aggregate(data.survey[, -c(39,40)], 
+clust.kmean <- aggregate(data.survey[, -c(38,39,40)], 
                          by = list(cluster = data.survey$cluster_kmeans), 
                          function(x)c(mean = round(mean(x), 2)))
 clust.kmean
@@ -235,9 +235,16 @@ clust.kmean_long <- melt(clust.kmean[, -c(2,15:38)], id.vars = "cluster")
 ggplot(data = clust.kmean_long, aes(x = variable, y = value, 
                                     fill = as.factor(cluster))) +
   geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "", y = "Mean satisfaction rating", fill = "Cluster") +
-  scale_fill_grey(start = 0.2, end = 0.8) +
-  theme_classic()
+  labs(x = "", y = "Mean Importance Rating", fill = "Cluster") +
+  #scale_fill_grey(start = 0.2, end = 0.8) +
+  #theme_classic()
+  scale_fill_manual(values = c("grey","steelblue4", "skyblue"))+
+  scale_y_continuous(limits = c(0, +6), 
+                     breaks = seq(0, 6, by = 1)) +
+  theme_bw(base_size = 16)+
+  theme(axis.text.x=element_text(angle = 20, hjust = 1))
+ggsave(file="MeanRating.png", width=9, height=5, dpi=600)
+
 
 
 #Look at differences in clusters with Ward
