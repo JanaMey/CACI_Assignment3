@@ -147,9 +147,9 @@ ggsave(file="WTP.png", width=6, height=3, dpi=300)
 
 #######standardization
 # standardize age
-# seg.df$Age <- scale(seg.df$Age)
-# seg.df$WTP <- scale(seg.df$WTP)
-# summary(seg.df)
+seg.df$Age <- scale(seg.df$Age)
+seg.df$WTP <- scale(seg.df$WTP)
+summary(seg.df)
 
 
 # Step 1: Split the data into training and test sets ===========================
