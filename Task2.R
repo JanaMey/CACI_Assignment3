@@ -156,7 +156,7 @@ ggplot(VRC, aes(x = K, y = value)) +
   geom_point() + geom_line() +
   facet_grid(variable~.) +
   labs(x = "Number of Clusters", 
-       y = "Variance Ratio index") +
+       y = "Variance Ratio Index") +
   theme_bw(base_size = 14)
 ggsave(file="VRC.png", width=8, height=3, dpi=600)  
 
